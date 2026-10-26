@@ -35,9 +35,9 @@ public class Main {
             int number = -1;
             System.out.println(prompt);
             if (scanner.hasNextInt()) {
-                number = scanner.nextInt();     // безопасно
+                number = scanner.nextInt();
             } else {
-                scanner.next();                     // выбросить неподходящее слово
+                scanner.next();
                 System.out.println("Нужно ввести число");
                 continue;
             }
