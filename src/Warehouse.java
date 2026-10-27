@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class Warehouse {
-    private ArrayList<Spool> spools = new ArrayList<>();
+    private final ArrayList<Spool> spools = new ArrayList<>();
 
     Warehouse() {
         spools.add(new Spool("PLA", "Белый", 850, 1500));
