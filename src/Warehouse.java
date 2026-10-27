@@ -11,7 +11,6 @@ public class Warehouse {
         };
     }
 
-
     int size() {
         return spools.length;
     }

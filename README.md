@@ -15,11 +15,11 @@
 ## Как запустить
 
 Нужен JDK 21 (например, Amazon Corretto 21).
-1) в IntelliJ IDEA — запустить класс Main;
+1) в IntelliJ IDEA — запустить класс Main
 2) из терминала — команды компиляции и запуска
 ```
-   - javac -d out src/Main.java src/Spool.java src/Warehouse.java
-   - java -cp out Main
+   javac -d out src/Main.java src/Spool.java src/Warehouse.java
+   java -cp out Main
 ```
 ## Как запустить тесты
 
@@ -27,21 +27,21 @@
 Результат ✅, если тест пройден и ❌, если что-то не работает.
 Нужен JDK 21 (например, Amazon Corretto 21).
 
-1) в IntelliJ IDEA — запустить класс SpoolTest.java;
+1) в IntelliJ IDEA — запустить класс SpoolTest.java
 2) из терминала — команды компиляции и запуска
 ```
-   - javac -d out src/SpoolTest.java src/Main.java src/Spool.java src/Warehouse.java
-   - java -cp out SpoolTest
+   javac -d out src/SpoolTest.java src/Main.java src/Spool.java src/Warehouse.java
+   java -cp out SpoolTest
 ``` 
 ## Устройство проекта
 
-- Spool — Класс катушка, материал цвет, остаток пластика и цена за кг, 
-- Warehouse — Склад, содержит катушки и методы для расчета по складу, 
-- Main — Меню и вывод на экран,
-- SpoolTest — Тестирование основного функционала
+- `Spool` — Класс катушка, материал цвет, остаток пластика и цена за кг 
+- `Warehouse` — Склад, содержит катушки и методы для расчета по складу 
+- `Main` — Меню и вывод на экран
+- `SpoolTest` — Тестирование основного функционала
 
 ## Что дальше
 
 - Учёт расходов и доходов
-- ArrayList и добавление катушек, 
+- ArrayList и добавление катушек 
 - JUnit, сохранение в файл
