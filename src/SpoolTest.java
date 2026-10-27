@@ -52,6 +52,18 @@ public class SpoolTest {
         check("getSpool(2) == getSpool(2)", warehouse.getSpool(2) == warehouse.getSpool(2));
         check("toString() новой катушки PLA Белый 850 равен \"PLA Белый, 850,00 г\"", warehouse.getSpool(6).toString().equals("PLA Белый, 850,00 г"));
         check("Катушка с материалом \"Pla\" → getMaterial() равен \"PLA\"", plaWhite.getMaterial().equals("PLA"));
+        check("Добавление катушки с ABS", warehouse.addSpool(new Spool("ABS", "Серый", 500, 1700)));
+        check("Проверка size() после добавления 7ой катушки", warehouse.size() == 7);
+        check("getSpool(7).getMaterial() == ABS", warehouse.getSpool(7).getMaterial().equals("ABS"));
+        check("gramsByMaterial == 500", approxEquals(warehouse.gramsByMaterial("ABS"),500, 0.001));
+        check("totalValue 4416,9 + 850 = 5266,9", approxEquals(warehouse.totalValue(),5266.9, 0.001));
+        check("getSpool(8) -> null", warehouse.getSpool(8) == null);
+        check("addSpool(null) == false", !warehouse.addSpool(null));
+        check("Размер после неудачного добавления не изменился", warehouse.size() == 7);
+        warehouse.addSpool(new Spool("abs", "Белый", 1000, 1700));
+        check("totalValue 5266,9 + 1700 = 6966.9", approxEquals(warehouse.totalValue(),6966.9, 0.001));
+        check("проверка \"abs\" без учета регистра gramsByMaterial == 1500", approxEquals(warehouse.gramsByMaterial("ABS"),1500, 0.001));
+
     }
 
     private static boolean approxEquals(double a, double b, double v) {

@@ -41,7 +41,7 @@ public class Warehouse {
     }
 
     Spool getSpool(int number) {
-        if (number <= 0 || number > spools.size()) {
+        if (number < 1 || number > spools.size()) {
             return null;
         }
         return spools.get(number - 1);
@@ -51,6 +51,13 @@ public class Warehouse {
         return spools.size();
     }
 
+    boolean addSpool(Spool spool) {
+        if (spool == null) {
+            return false;
+        }
+        spools.add(spool);
+        return true;
+    }
 }
 
 
