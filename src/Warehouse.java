@@ -1,31 +1,22 @@
+import java.util.ArrayList;
+
 public class Warehouse {
-    private Spool[] spools;
+    private ArrayList<Spool> spools = new ArrayList<>();
 
     Warehouse() {
-        spools = new Spool[]{new Spool("PLA", "Белый", 850, 1500),
-                new Spool("PETG", "Черный", 120.5, 1800),
-                new Spool("PLA", "Красный", 1000, 1500),
-                new Spool("TPU", "Прозрачный", 60, 2500),
-                new Spool("PLA", "синий", 100, 1500),
-                new Spool("PLA", "Белый", 850, 1500)
-        };
+        spools.add(new Spool("PLA", "Белый", 850, 1500));
+        spools.add(new Spool("PETG", "Черный", 120.5, 1800));
+        spools.add(new Spool("PLA", "Красный", 1000, 1500));
+        spools.add(new Spool("TPU", "Прозрачный", 60, 2500));
+        spools.add(new Spool("PLA", "синий", 100, 1500));
+        spools.add(new Spool("PLA", "Белый", 850, 1500));
     }
 
-    int size() {
-        return spools.length;
-    }
-
-    Spool getSpool(int number) {
-        if (number <= 0 || number > spools.length){
-            return null;
-        }
-            return spools[number - 1];
-    }
 
     double totalUsed() {
         double sum = 0;
-        for (int i = 0; i < spools.length; i++) {
-            sum += spools[i].getGramsUsed();
+        for (Spool spool : spools) {
+            sum += spool.getGramsUsed();
         }
         return sum;
     }
@@ -33,9 +24,9 @@ public class Warehouse {
     double gramsByMaterial(String material) {
         double sum = 0;
         String materialUpperCase = material.toUpperCase();
-        for (int i = 0; i < spools.length; i++) {
-            if (spools[i].getMaterial().equals(materialUpperCase)) {
-                sum += spools[i].getGramsLeft();
+        for (Spool spool : spools) {
+            if (spool.getMaterial().equals(materialUpperCase)) {
+                sum += spool.getGramsLeft();
             }
         }
         return sum;
@@ -43,11 +34,23 @@ public class Warehouse {
 
     double totalValue() {
         double sum = 0;
-        for (int i = 0; i < spools.length; i++) {
-            sum += spools[i].costOf(spools[i].getGramsLeft());
+        for (Spool spool : spools) {
+            sum += spool.costOf(spool.getGramsLeft());
         }
         return sum;
     }
+
+    Spool getSpool(int number) {
+        if (number <= 0 || number > spools.size()) {
+            return null;
+        }
+        return spools.get(number - 1);
+    }
+
+    int size() {
+        return spools.size();
+    }
+
 }
 
 
