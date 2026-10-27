@@ -58,6 +58,13 @@ public class Warehouse {
         spools.add(spool);
         return true;
     }
+    boolean removeSpool(int number) {
+        if (number < 1 || number > spools.size()){
+            return false;
+        }
+        spools.remove(number-1);
+        return true;
+    }
 }
 
 

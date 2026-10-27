@@ -55,15 +55,32 @@ public class SpoolTest {
         check("Добавление катушки с ABS", warehouse.addSpool(new Spool("ABS", "Серый", 500, 1700)));
         check("Проверка size() после добавления 7ой катушки", warehouse.size() == 7);
         check("getSpool(7).getMaterial() == ABS", warehouse.getSpool(7).getMaterial().equals("ABS"));
-        check("gramsByMaterial == 500", approxEquals(warehouse.gramsByMaterial("ABS"),500, 0.001));
-        check("totalValue 4416,9 + 850 = 5266,9", approxEquals(warehouse.totalValue(),5266.9, 0.001));
+        check("gramsByMaterial == 500", approxEquals(warehouse.gramsByMaterial("ABS"), 500, 0.001));
+        check("totalValue 4416,9 + 850 = 5266,9", approxEquals(warehouse.totalValue(), 5266.9, 0.001));
         check("getSpool(8) -> null", warehouse.getSpool(8) == null);
         check("addSpool(null) == false", !warehouse.addSpool(null));
         check("Размер после неудачного добавления не изменился", warehouse.size() == 7);
         warehouse.addSpool(new Spool("abs", "Белый", 1000, 1700));
-        check("totalValue 5266,9 + 1700 = 6966.9", approxEquals(warehouse.totalValue(),6966.9, 0.001));
-        check("проверка \"abs\" без учета регистра gramsByMaterial == 1500", approxEquals(warehouse.gramsByMaterial("ABS"),1500, 0.001));
-
+        check("totalValue 5266,9 + 1700 = 6966.9", approxEquals(warehouse.totalValue(), 6966.9, 0.001));
+        check("проверка \"abs\" без учета регистра gramsByMaterial == 1500", approxEquals(warehouse.gramsByMaterial("ABS"), 1500, 0.001));
+        //Тесты удаления катушки
+        Warehouse warehouse1 = new Warehouse();
+        check("Удалить катушку №1 --> true", warehouse1.removeSpool(1));
+        check("size() --> 5", warehouse1.size() == 5);
+        check("getSpool(1).getMaterial() --> PETG", warehouse1.getSpool(1).getMaterial().equals("PETG"));
+        check("gramsByMaterial(\"PLA\") --> 1950", approxEquals(warehouse1.gramsByMaterial("PLA"), 1950, 0.001));
+        check("Удалить катушку №0 --> false", !warehouse1.removeSpool(0));
+        check("Удалить катушку №6 --> false", !warehouse1.removeSpool(6));
+        check("Удалить катушку №1 из 5 --> true", warehouse1.removeSpool(1));
+        check("Удалить катушку №1 из 4 --> true", warehouse1.removeSpool(1));
+        check("Удалить катушку №1 из 3 --> true", warehouse1.removeSpool(1));
+        check("Удалить катушку №1 из 2 --> true", warehouse1.removeSpool(1));
+        check("Удалить катушку №1 из 1 --> true", warehouse1.removeSpool(1));
+        check("size() --> 0", warehouse1.size() == 0);
+        check("totalValue()", warehouse1.totalValue() == 0);
+        check("totalUsed()", warehouse1.totalUsed() == 0);
+        check("getSpool(1) -- > false", warehouse1.getSpool(1) == null);
+        check("removeSpool(1) -- > false", !warehouse1.removeSpool(1));
     }
 
     private static boolean approxEquals(double a, double b, double v) {
