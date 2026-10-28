@@ -65,6 +65,16 @@ public class Warehouse {
         spools.remove(number-1);
         return true;
     }
+    int removeEmpty() {
+        int counterEmptySpools = 0;
+           for (int i = spools.size()-1; i >= 0; i--){
+            if ((spools.get(i).getGramsLeft() - 0) < 0.001) {
+                spools.remove(i);
+                counterEmptySpools++;
+            }
+        }
+        return counterEmptySpools;
+    }
 }
 
 

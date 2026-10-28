@@ -81,8 +81,30 @@ public class SpoolTest {
         check("totalUsed()", warehouse1.totalUsed() == 0);
         check("getSpool(1) -- > false", warehouse1.getSpool(1) == null);
         check("removeSpool(1) -- > false", !warehouse1.removeSpool(1));
+        //Тесты удаления пустых катушек
+        Warehouse warehouse2 = new Warehouse();
+        warehouse2.addSpool(new Spool("abs", "Белый", 0, 1700));
+        warehouse2.addSpool(new Spool("abs", "Белый", 0, 1700));
+        check("removeEmpty() --> 2", warehouse2.removeEmpty() == 2);
+        check("size() --> 6", warehouse2.size() == 6);
+        boolean hasEmptySpool = false;
+        for (int i = 1; i <= warehouse2.size(); i++){
+            if (approxEquals(warehouse2.getSpool(i).getGramsLeft(), 0, 0.001)){
+                hasEmptySpool = true;
+                break;
+            }
+        }
+        check ("ни у одной катушки остаток не 0", !hasEmptySpool);
+        check("removeEmpty() --> 0", warehouse2.removeEmpty() == 0);
+        warehouse2.removeSpool(1);
+        warehouse2.removeSpool(1);
+        warehouse2.removeSpool(1);
+        warehouse2.removeSpool(1);
+        warehouse2.removeSpool(1);
+        warehouse2.removeSpool(1);
+        check("size() --> 0", warehouse2.size() == 0);
+        check("removeEmpty() --> 0", warehouse2.removeEmpty() == 0);
     }
-
     private static boolean approxEquals(double a, double b, double v) {
         return Math.abs(a - b) <= v;
     }
