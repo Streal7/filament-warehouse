@@ -1,8 +1,9 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class Warehouse {
 
-    private final ArrayList<Spool> spools = new ArrayList<>();
+    private final List<Spool> spools = new ArrayList<>();
 
     Warehouse() {
         spools.add(new Spool("PLA", "Белый", 850, 1500));
