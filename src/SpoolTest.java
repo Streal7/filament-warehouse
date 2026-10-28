@@ -84,17 +84,24 @@ public class SpoolTest {
         //Тесты удаления пустых катушек
         Warehouse warehouse2 = new Warehouse();
         warehouse2.addSpool(new Spool("abs", "Белый", 0, 1700));
-        warehouse2.addSpool(new Spool("abs", "Белый", 0, 1700));
-        check("removeEmpty() --> 2", warehouse2.removeEmpty() == 2);
+        warehouse2.addSpool(new Spool("abs", "Белый", 0.0005, 1700));
+        warehouse2.addSpool(new Spool("abs", "Белый", 1, 1700));
+        check("остаток 0 ---> isEmpty true", warehouse2.getSpool(7).isEmpty());
+        check("остаток 0.0005 ---> isEmpty true", warehouse2.getSpool(8).isEmpty());
+        check("остаток 1 ---> isEmpty false", !warehouse2.getSpool(9).isEmpty());
+        check("остаток 120.5 ---> isEmpty false", !warehouse2.getSpool(2).isEmpty());
+        warehouse2.getSpool(2).spend(120.5);
+        check("остаток после spend 0 ---> isEmpty true", warehouse2.getSpool(2).isEmpty());
+        check("removeEmpty() --> 3", warehouse2.removeEmpty() == 3);
         check("size() --> 6", warehouse2.size() == 6);
         boolean hasEmptySpool = false;
-        for (int i = 1; i <= warehouse2.size(); i++){
-            if (approxEquals(warehouse2.getSpool(i).getGramsLeft(), 0, 0.001)){
+        for (int i = 1; i <= warehouse2.size(); i++) {
+            if (warehouse2.getSpool(i).isEmpty()) {
                 hasEmptySpool = true;
                 break;
             }
         }
-        check ("ни у одной катушки остаток не 0", !hasEmptySpool);
+        check("ни у одной катушки остаток не 0", !hasEmptySpool);
         check("removeEmpty() --> 0", warehouse2.removeEmpty() == 0);
         warehouse2.removeSpool(1);
         warehouse2.removeSpool(1);
@@ -105,6 +112,7 @@ public class SpoolTest {
         check("size() --> 0", warehouse2.size() == 0);
         check("removeEmpty() --> 0", warehouse2.removeEmpty() == 0);
     }
+
     private static boolean approxEquals(double a, double b, double v) {
         return Math.abs(a - b) <= v;
     }

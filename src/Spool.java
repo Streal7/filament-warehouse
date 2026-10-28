@@ -1,6 +1,7 @@
 public class Spool {
     private static final double LOW_THRESHOLD = 100.00;
     private static final double GRAMS_PER_KG = 1000.00;
+    private static final double PRECISION_THRESHOLD = 0.001;
     private final String material;
     private final String color;
     private double gramsLeft;
@@ -17,6 +18,10 @@ public class Spool {
 
     boolean isLow() {
         return (gramsLeft < LOW_THRESHOLD);
+    }
+
+    boolean isEmpty() {
+        return gramsLeft < PRECISION_THRESHOLD;
     }
 
     double costOf(double grams) {
@@ -59,8 +64,9 @@ public class Spool {
     public double getGramsUsed() {
         return gramsUsed;
     }
+
     @Override
     public String toString() {
-        return String.format("%s %s, %.2f г",getMaterial(),getColor(),getGramsLeft());
+        return String.format("%s %s, %.2f г", getMaterial(), getColor(), getGramsLeft());
     }
 }

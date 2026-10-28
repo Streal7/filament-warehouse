@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 
 public class Warehouse {
+
     private final ArrayList<Spool> spools = new ArrayList<>();
 
     Warehouse() {
@@ -58,17 +59,19 @@ public class Warehouse {
         spools.add(spool);
         return true;
     }
+
     boolean removeSpool(int number) {
-        if (number < 1 || number > spools.size()){
+        if (number < 1 || number > spools.size()) {
             return false;
         }
-        spools.remove(number-1);
+        spools.remove(number - 1);
         return true;
     }
+
     int removeEmpty() {
         int counterEmptySpools = 0;
-           for (int i = spools.size()-1; i >= 0; i--){
-            if ((spools.get(i).getGramsLeft() - 0) < 0.001) {
+        for (int i = spools.size() - 1; i >= 0; i--) {
+            if (spools.get(i).isEmpty()) {
                 spools.remove(i);
                 counterEmptySpools++;
             }
