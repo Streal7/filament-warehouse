@@ -1,4 +1,5 @@
 
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
@@ -7,7 +8,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             printMenu();
-            int cmd = readIntInRange(scanner, "Выберите пункт", 0, 11);
+            int cmd = readIntInRange(scanner, "Выберите пункт", 0, 12);
             if (cmd == 1) {
                 printStock(warehouse);
             } else if (cmd == 2) {
@@ -30,6 +31,8 @@ public class Main {
                 handleRemoveEmpty(scanner, warehouse);
             } else if (cmd == 11) {
                 handleLowSpools(warehouse);
+            } else if (cmd == 12) {
+                handleMaterialReport(warehouse);
             } else if (cmd == 0) {
                 System.out.println("Выход из программы");
                 break;
@@ -207,7 +210,7 @@ public class Main {
             System.out.println("Склад пуст");
             return;
         }
-        if (warehouse.lowSpools().isEmpty()){
+        if (warehouse.lowSpools().isEmpty()) {
             System.out.println("Все катушки в достатке");
             return;
         }
@@ -218,6 +221,19 @@ public class Main {
             }
         }
     }
+
+    static void handleMaterialReport(Warehouse warehouse) {
+        if (warehouse.size() == 0) {
+            System.out.println("Склад пуст");
+            return;
+        }
+        for (Map.Entry<String, Double> entry : warehouse.materialReport().entrySet()) {
+            String material = entry.getKey();
+            double grams = entry.getValue();
+            System.out.printf("%-10s — %8.2f г%n", material, grams);
+        }
+    }
+
 
     static void printStockHeader() {
         System.out.printf("%4s | %-10s | %-11s |  %11s | %10s | %s%n", "№п/п", "Материал", "Цвет", "Вес (грамм)", "Цена", "Предупреждения");
@@ -237,6 +253,7 @@ public class Main {
         System.out.println("9. Удалить катушку");
         System.out.println("10. Удалить пустые катушки");
         System.out.println("11. Заканчивающиеся катушки");
+        System.out.println("12. Отчет по запасу материалов");
         System.out.println("0. Выход");
 
     }

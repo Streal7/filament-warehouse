@@ -125,9 +125,21 @@ public class SpoolTest {
         lowWarehouse.clear();
         check("Размер исходного списка не изменился", warehouse3.size() == 6);
         warehouse3.getSpool(1).spend(800);
-        check("Заканчивается у двух катушек",warehouse3.lowSpools().size() == 2);
-        check("На пустом складе не равно null",warehouse1.lowSpools() != null);
-        check ("warehouse1.lowSpools().isEmpty() -- false", warehouse1.lowSpools().isEmpty());
+        check("Заканчивается у двух катушек", warehouse3.lowSpools().size() == 2);
+        check("На пустом складе не равно null", warehouse1.lowSpools() != null);
+        check("warehouse1.lowSpools().isEmpty()", warehouse1.lowSpools().isEmpty());
+        Warehouse warehouse4 = new Warehouse();
+        check("materialReport(PLA) --> 2800", approxEquals(2800, warehouse4.materialReport().getOrDefault("PLA", -1.0), 0.001));
+        check("materialReport(PETG) --> 120.5", approxEquals(120.5, warehouse4.materialReport().getOrDefault("PETG", -1.0), 0.001));
+        check("materialReport(TPU) --> 60", approxEquals(60, warehouse4.materialReport().getOrDefault("TPU", -1.0), 0.001));
+        check("materialReport на пустом складе", warehouse2.materialReport().isEmpty());
+        warehouse4.materialReport().clear();
+        check("materialReport(PLA) после clear() --> 2800", approxEquals(2800, warehouse4.materialReport().getOrDefault("PLA", -1.0), 0.001));
+        check("materialReport(PETG) после clear() --> 120.5", approxEquals(120.5, warehouse4.materialReport().getOrDefault("PETG", -1.0), 0.001));
+        check("materialReport(TPU) после clear() --> 60", approxEquals(60, warehouse4.materialReport().getOrDefault("TPU", -1.0), 0.001));
+        warehouse4.getSpool(4).spend(60);
+        check("materialReport(TPU) --> 0.00", approxEquals(0.00, warehouse4.materialReport().getOrDefault("TPU", -1.0), 0.001));
+        check("Тест на количество ключей --> 3", warehouse4.materialReport().size() == 3);
     }
 
     private static boolean approxEquals(double a, double b, double v) {

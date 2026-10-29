@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class Warehouse {
 
@@ -104,6 +102,17 @@ public class Warehouse {
             }
         return result;
     }
+    Map<String, Double> materialReport(){
+        Map<String, Double> result = new TreeMap<>();
+        for (Spool spool: spools){
+            String material = spool.getMaterial();
+            double current = result.getOrDefault(material, 0.0);
+            result.put(material, current + spool.getGramsLeft());
+        }
+        return result;
+    }
+
+
 
 }
 
