@@ -210,15 +210,14 @@ public class Main {
             System.out.println("Склад пуст");
             return;
         }
-        if (warehouse.lowSpools().isEmpty()) {
+        Map<Integer, Spool> lowSpools = warehouse.lowSpools();
+        if (lowSpools.isEmpty()) {
             System.out.println("Все катушки в достатке");
             return;
         }
         printStockHeader();
-        for (int i = 1; i <= warehouse.size(); i++) {
-            if (warehouse.getSpool(i).isLow()) {
-                System.out.println(warehouse.getSpool(i).toRow(i));
-            }
+        for (Map.Entry<Integer, Spool> lowSpool : lowSpools.entrySet()) {
+            System.out.println(lowSpool.getValue().toRow(lowSpool.getKey()));
         }
     }
 

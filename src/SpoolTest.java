@@ -1,4 +1,4 @@
-import java.util.List;
+import java.util.Map;
 
 public class SpoolTest {
     static void check(String name, boolean passed) {
@@ -120,8 +120,9 @@ public class SpoolTest {
         check("removeEmpty() --> 0", warehouse2.removeEmpty() == 0);
         Warehouse warehouse3 = new Warehouse();
         check("Заканчивается у одной катушки", warehouse3.lowSpools().size() == 1);
-        List<Spool> lowWarehouse = warehouse3.lowSpools();
-        check("Материал первой заканчивающейся TPU", "TPU".equals(lowWarehouse.getFirst().getMaterial()));
+        Map<Integer, Spool> lowWarehouse = warehouse3.lowSpools();
+        check("Ключ 4 есть в lowSpools", lowWarehouse.containsKey(4));
+        check("По ключу 4 лежит катушка №4 со склада", lowWarehouse.get(4) == warehouse3.getSpool(4));
         lowWarehouse.clear();
         check("Размер исходного списка не изменился", warehouse3.size() == 6);
         warehouse3.getSpool(1).spend(800);
@@ -140,6 +141,14 @@ public class SpoolTest {
         warehouse4.getSpool(4).spend(60);
         check("materialReport(TPU) --> 0.00", approxEquals(0.00, warehouse4.materialReport().getOrDefault("TPU", -1.0), 0.001));
         check("Тест на количество ключей --> 3", warehouse4.materialReport().size() == 3);
+        Warehouse warehouse5 = new Warehouse();
+        warehouse5.getSpool(1).spend(800);
+        warehouse5.getSpool(6).spend(800);
+        Map<Integer, Spool> lowWarehouse5 = warehouse5.lowSpools();
+        check("проверяем ключи --> 1", lowWarehouse5.containsKey(1));
+        check("проверяем ключи --> 4", lowWarehouse5.containsKey(4));
+        check("проверяем ключи --> 6", lowWarehouse5.containsKey(6));
+        check("Проверяем размер lowWarehouse5 --> 3", lowWarehouse5.size() == 3);
     }
 
     private static boolean approxEquals(double a, double b, double v) {

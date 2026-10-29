@@ -93,25 +93,25 @@ public class Warehouse {
         return counterEmptySpools;
     }
 
-    List<Spool> lowSpools(){
-            List<Spool> result = new ArrayList<>();
-            for (Spool spool : spools){
-                if (spool.isLow()){
-                    result.add(spool);
-                }
+    Map<Integer, Spool> lowSpools() {
+        Map<Integer, Spool> result = new TreeMap<>();
+        for (int i = 1; i <= spools.size(); i++) {
+            if (spools.get(i-1).isLow()) {
+                result.put(i, spools.get(i-1));
             }
+        }
         return result;
     }
-    Map<String, Double> materialReport(){
+
+    Map<String, Double> materialReport() {
         Map<String, Double> result = new TreeMap<>();
-        for (Spool spool: spools){
+        for (Spool spool : spools) {
             String material = spool.getMaterial();
             double current = result.getOrDefault(material, 0.0);
             result.put(material, current + spool.getGramsLeft());
         }
         return result;
     }
-
 
 
 }
