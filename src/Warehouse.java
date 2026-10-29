@@ -95,6 +95,16 @@ public class Warehouse {
         return counterEmptySpools;
     }
 
+    List<Spool> lowSpools(){
+            List<Spool> result = new ArrayList<>();
+            for (Spool spool : spools){
+                if (spool.isLow()){
+                    result.add(spool);
+                }
+            }
+        return result;
+    }
+
 }
 
 

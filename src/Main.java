@@ -7,7 +7,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             printMenu();
-            int cmd = readIntInRange(scanner, "Выберите пункт", 0, 10);
+            int cmd = readIntInRange(scanner, "Выберите пункт", 0, 11);
             if (cmd == 1) {
                 printStock(warehouse);
             } else if (cmd == 2) {
@@ -28,6 +28,8 @@ public class Main {
                 handleRemoveSpool(scanner, warehouse);
             } else if (cmd == 10) {
                 handleRemoveEmpty(scanner, warehouse);
+            } else if (cmd == 11) {
+                handleLowSpools(warehouse);
             } else if (cmd == 0) {
                 System.out.println("Выход из программы");
                 break;
@@ -200,6 +202,28 @@ public class Main {
         }
     }
 
+    static void handleLowSpools(Warehouse warehouse) {
+        if (warehouse.size() == 0) {
+            System.out.println("Склад пуст");
+            return;
+        }
+        if (warehouse.lowSpools().isEmpty()){
+            System.out.println("Все катушки в достатке");
+            return;
+        }
+        printStockHeader();
+        for (int i = 1; i <= warehouse.size(); i++) {
+            if (warehouse.getSpool(i).isLow()) {
+                System.out.println(warehouse.getSpool(i).toRow(i));
+            }
+        }
+    }
+
+    static void printStockHeader() {
+        System.out.printf("%4s | %-10s | %-11s |  %11s | %10s | %s%n", "№п/п", "Материал", "Цвет", "Вес (грамм)", "Цена", "Предупреждения");
+        System.out.println("*".repeat(80));
+    }
+
     static void printMenu() {
         System.out.println("====Меню склада====");
         System.out.println("1. Показать склад");
@@ -212,14 +236,14 @@ public class Main {
         System.out.println("8. Добавить катушку");
         System.out.println("9. Удалить катушку");
         System.out.println("10. Удалить пустые катушки");
+        System.out.println("11. Заканчивающиеся катушки");
         System.out.println("0. Выход");
 
     }
 
 
     static void printStock(Warehouse warehouse) {
-        System.out.printf("%4s | %-10s | %-11s |  %11s | %10s | %s%n", "№п/п", "Материал", "Цвет", "Вес (грамм)", "Цена", "Предупреждения");
-        System.out.println("*".repeat(80));
+        printStockHeader();
         for (int i = 1; i <= warehouse.size(); i++) {
             System.out.println(warehouse.getSpool(i).toRow(i));
         }

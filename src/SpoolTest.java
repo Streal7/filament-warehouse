@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class SpoolTest {
     static void check(String name, boolean passed) {
         System.out.println((passed ? "✅ " : "❌ ") + name);
@@ -116,7 +118,15 @@ public class SpoolTest {
         warehouse2.removeSpool(1);
         check("size() --> 0", warehouse2.size() == 0);
         check("removeEmpty() --> 0", warehouse2.removeEmpty() == 0);
-
+        Warehouse warehouse3 = new Warehouse();
+        check("Заканчивается у одной катушки", warehouse3.lowSpools().size() == 1);
+        List<Spool> lowWarehouse = warehouse3.lowSpools();
+        check("Материал первой заканчивающейся TPU", "TPU".equals(lowWarehouse.getFirst().getMaterial()));
+        lowWarehouse.clear();
+        check("Размер исходного списка не изменился", warehouse3.size() == 6);
+        warehouse3.getSpool(1).spend(800);
+        check("Заканчивается у двух катушек",warehouse3.lowSpools().size() == 2);
+        check("На пустом складе не равно null",warehouse1.lowSpools() != null);
     }
 
     private static boolean approxEquals(double a, double b, double v) {
