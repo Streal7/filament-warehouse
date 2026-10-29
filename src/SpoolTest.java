@@ -127,6 +127,7 @@ public class SpoolTest {
         warehouse3.getSpool(1).spend(800);
         check("Заканчивается у двух катушек",warehouse3.lowSpools().size() == 2);
         check("На пустом складе не равно null",warehouse1.lowSpools() != null);
+        check ("warehouse1.lowSpools().isEmpty() -- false", warehouse1.lowSpools().isEmpty());
     }
 
     private static boolean approxEquals(double a, double b, double v) {
