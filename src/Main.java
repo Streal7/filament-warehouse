@@ -7,7 +7,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             printMenu();
-            int cmd = readIntInRange(scanner, "Выберите пункт", 0, 9);
+            int cmd = readIntInRange(scanner, "Выберите пункт", 0, 10);
             if (cmd == 1) {
                 printStock(warehouse);
             } else if (cmd == 2) {
@@ -26,6 +26,8 @@ public class Main {
                 handleAddSpool(scanner, warehouse);
             } else if (cmd == 9) {
                 handleRemoveSpool(scanner, warehouse);
+            } else if (cmd == 10) {
+                handleRemoveEmpty(scanner, warehouse);
             } else if (cmd == 0) {
                 System.out.println("Выход из программы");
                 break;
@@ -180,6 +182,24 @@ public class Main {
         }
     }
 
+    static void handleRemoveEmpty(Scanner scanner, Warehouse warehouse) {
+        if (warehouse.size() == 0) {
+            System.out.println("Склад пуст");
+            return;
+        }
+        if (warehouse.countEmpty() == 0) {
+            System.out.println("На складе нет пустых катушек");
+            return;
+        }
+        boolean isToDelete = readYesNo(scanner, (String.format("Вы уверены, что хотите удалить %d катушек?", warehouse.countEmpty())));
+        if (!isToDelete) {
+            System.out.println("Удаление отменено");
+        } else {
+            System.out.printf("Удалено %d катушек%n", warehouse.removeEmpty());
+            printStock(warehouse);
+        }
+    }
+
     static void printMenu() {
         System.out.println("====Меню склада====");
         System.out.println("1. Показать склад");
@@ -191,6 +211,7 @@ public class Main {
         System.out.println("7. Пластика израсходовано");
         System.out.println("8. Добавить катушку");
         System.out.println("9. Удалить катушку");
+        System.out.println("10. Удалить пустые катушки");
         System.out.println("0. Выход");
 
     }

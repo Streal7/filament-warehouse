@@ -83,7 +83,19 @@ public class Warehouse {
         return counterEmptySpools;
     }
 
+    int countEmpty() {
+        int counterEmptySpools = 0;
+        Iterator<Spool> iterator = spools.iterator();
+        while (iterator.hasNext()) {
+            Spool spool = iterator.next();
+            if (spool.isEmpty()) {
+                counterEmptySpools++;
+            }
+        }
+        return counterEmptySpools;
     }
+
+}
 
 
 

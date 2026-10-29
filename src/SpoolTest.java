@@ -83,9 +83,9 @@ public class SpoolTest {
         check("removeSpool(1) -- > false", !warehouse1.removeSpool(1));
         //Тесты удаления пустых катушек
         Warehouse warehouse2 = new Warehouse();
-
+        check("countEmpty() --> 0", warehouse2.countEmpty() == 0);
         check("getSpool(1) spend 850 ", warehouse2.getSpool(1).spend(850));
-        check("removeEmpty() == 1", warehouse2.removeEmpty()==1);
+        check("removeEmpty() == 1", warehouse2.removeEmpty() == 1);
         check("getSpool(1) материал PETG", "PETG".equals(warehouse2.getSpool(1).getMaterial()));
         warehouse2.addSpool(new Spool("abs", "Белый", 0, 1700));
         warehouse2.addSpool(new Spool("abs", "Белый", 0.0005, 1700));
@@ -95,6 +95,7 @@ public class SpoolTest {
         check("остаток 1 ---> isEmpty false", !warehouse2.getSpool(8).isEmpty());
         check("остаток 120.5 ---> isEmpty false", !warehouse2.getSpool(1).isEmpty());
         warehouse2.getSpool(1).spend(120.5);
+        check("countEmpty() после списания --> 3", warehouse2.countEmpty() == 3);
         check("остаток после spend 0 ---> isEmpty true", warehouse2.getSpool(1).isEmpty());
         check("removeEmpty() --> 3", warehouse2.removeEmpty() == 3);
         check("size() --> 5", warehouse2.size() == 5);
@@ -115,6 +116,7 @@ public class SpoolTest {
         warehouse2.removeSpool(1);
         check("size() --> 0", warehouse2.size() == 0);
         check("removeEmpty() --> 0", warehouse2.removeEmpty() == 0);
+
     }
 
     private static boolean approxEquals(double a, double b, double v) {
