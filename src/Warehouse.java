@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Warehouse {
@@ -71,15 +72,18 @@ public class Warehouse {
 
     int removeEmpty() {
         int counterEmptySpools = 0;
-        for (int i = spools.size() - 1; i >= 0; i--) {
-            if (spools.get(i).isEmpty()) {
-                spools.remove(i);
+        Iterator<Spool> iterator = spools.iterator();
+        while (iterator.hasNext()) {
+            Spool spool = iterator.next();
+            if (spool.isEmpty()) {
+                iterator.remove();
                 counterEmptySpools++;
             }
         }
         return counterEmptySpools;
     }
-}
+
+    }
 
 
 
