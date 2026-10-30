@@ -23,14 +23,7 @@ public class Warehouse {
     }
 
     double gramsByMaterial(String material) {
-        double sum = 0;
-        String materialUpperCase = material.toUpperCase();
-        for (Spool spool : spools) {
-            if (spool.getMaterial().equals(materialUpperCase)) {
-                sum += spool.getGramsLeft();
-            }
-        }
-        return sum;
+        return materialReport().getOrDefault(material.toUpperCase(), 0.00);
     }
 
     double totalValue() {
