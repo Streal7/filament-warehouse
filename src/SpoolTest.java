@@ -149,6 +149,14 @@ public class SpoolTest {
         check("проверяем ключи --> 4", lowWarehouse5.containsKey(4));
         check("проверяем ключи --> 6", lowWarehouse5.containsKey(6));
         check("Проверяем размер lowWarehouse5 --> 3", lowWarehouse5.size() == 3);
+        check("spoolCountByMaterial() PLA -- > 4", warehouse5.spoolCountByMaterial().getOrDefault("PLA", -1) == 4);
+        check("spoolCountByMaterial() TPU -- > 1", warehouse5.spoolCountByMaterial().getOrDefault("TPU", -1) == 1);
+        check("spoolCountByMaterial() PETG -- > 1", warehouse5.spoolCountByMaterial().getOrDefault("PETG", -1) == 1);
+        check("Пустой склад --> пустая Map", warehouse2.spoolCountByMaterial().isEmpty());
+        warehouse5.removeSpool(1);
+        check("spoolCountByMaterial() PLA после удаления 1 катушки -- > 3", warehouse5.spoolCountByMaterial().getOrDefault("PLA", -1) == 3);
+        check("Тест на количество ключей spoolCountByMaterial --> 3", warehouse4.spoolCountByMaterial().size() == 3);
+
     }
 
     private static boolean approxEquals(double a, double b, double v) {

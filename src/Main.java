@@ -1,4 +1,3 @@
-
 import java.util.Map;
 import java.util.Scanner;
 
@@ -226,10 +225,14 @@ public class Main {
             System.out.println("Склад пуст");
             return;
         }
-        for (Map.Entry<String, Double> entry : warehouse.materialReport().entrySet()) {
+        Map<String, Integer> spoolCount = warehouse.spoolCountByMaterial();
+        Map<String, Double> spoolGrams = warehouse.materialReport();
+
+        for (Map.Entry<String, Double> entry : spoolGrams.entrySet()) {
             String material = entry.getKey();
             double grams = entry.getValue();
-            System.out.printf("%-10s — %8.2f г%n", material, grams);
+            int count = spoolCount.getOrDefault(material, 0);
+            System.out.printf("%-10s — %3d шт. — %8.2f г%n", material, count, grams);
         }
     }
 

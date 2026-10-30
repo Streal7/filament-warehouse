@@ -106,6 +106,15 @@ public class Warehouse {
         return result;
     }
 
+    Map<String, Integer> spoolCountByMaterial(){
+        Map<String, Integer> spoolCount = new HashMap<>();
+        for (Spool spool : spools) {
+            String material = spool.getMaterial();
+            int count = spoolCount.getOrDefault(material,0);
+            spoolCount.put(material, count + 1);
+        }
+        return spoolCount;
+    }
 
 }
 
