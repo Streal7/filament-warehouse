@@ -7,7 +7,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             printMenu();
-            int cmd = readIntInRange(scanner, "Выберите пункт", 0, 12);
+            int cmd = readIntInRange(scanner, "Выберите пункт", 0, 13);
             if (cmd == 1) {
                 printStock(warehouse);
             } else if (cmd == 2) {
@@ -32,6 +32,8 @@ public class Main {
                 handleLowSpools(warehouse);
             } else if (cmd == 12) {
                 handleMaterialReport(warehouse);
+            } else if (cmd == 13) {
+                handleMaterialBelow(scanner, warehouse);
             } else if (cmd == 0) {
                 System.out.println("Выход из программы");
                 break;
@@ -236,6 +238,26 @@ public class Main {
         }
     }
 
+    static void handleMaterialBelow(Scanner scanner, Warehouse warehouse) {
+        if (warehouse.size() == 0) {
+            System.out.println("Склад пуст");
+            return;
+        }
+
+        double grams = readPositiveDouble(scanner, "Введите минимальный порог пластика");
+        Map<String, Double> toRestock = warehouse.materialsBelow(grams);
+        if (toRestock.isEmpty()) {
+            System.out.println("Докупать нечего");
+            return;
+        }
+        for (Map.Entry<String, Double> entry : toRestock.entrySet()) {
+            String material = entry.getKey();
+            double gramsToAdd = grams - entry.getValue();
+            System.out.printf("Материал %-10s нужно пополнить на %8.2f г%n", material, gramsToAdd);
+        }
+
+    }
+
 
     static void printStockHeader() {
         System.out.printf("%4s | %-10s | %-11s |  %11s | %10s | %s%n", "№п/п", "Материал", "Цвет", "Вес (грамм)", "Цена", "Предупреждения");
@@ -256,6 +278,7 @@ public class Main {
         System.out.println("10. Удалить пустые катушки");
         System.out.println("11. Заканчивающиеся катушки");
         System.out.println("12. Отчет по запасу материалов");
+        System.out.println("13. Потребность пополнения материалов");
         System.out.println("0. Выход");
 
     }

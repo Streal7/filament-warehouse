@@ -89,8 +89,8 @@ public class Warehouse {
     Map<Integer, Spool> lowSpools() {
         Map<Integer, Spool> result = new TreeMap<>();
         for (int i = 1; i <= spools.size(); i++) {
-            if (spools.get(i-1).isLow()) {
-                result.put(i, spools.get(i-1));
+            if (spools.get(i - 1).isLow()) {
+                result.put(i, spools.get(i - 1));
             }
         }
         return result;
@@ -106,17 +106,30 @@ public class Warehouse {
         return result;
     }
 
-    Map<String, Integer> spoolCountByMaterial(){
+    Map<String, Double> materialsBelow(double minGrams) {
+        Map<String, Double> report = materialReport();
+        Iterator<Map.Entry<String, Double>> iterator = report.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, Double> entry = iterator.next();
+            if (entry.getValue() >= minGrams) {
+                iterator.remove();
+            }
+        }
+        return report;
+    }
+
+    Map<String, Integer> spoolCountByMaterial() {
         Map<String, Integer> spoolCount = new HashMap<>();
         for (Spool spool : spools) {
             String material = spool.getMaterial();
-            int count = spoolCount.getOrDefault(material,0);
+            int count = spoolCount.getOrDefault(material, 0);
             spoolCount.put(material, count + 1);
         }
         return spoolCount;
     }
 
 }
+
 
 
 

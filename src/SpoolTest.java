@@ -156,7 +156,17 @@ public class SpoolTest {
         warehouse5.removeSpool(1);
         check("spoolCountByMaterial() PLA после удаления 1 катушки -- > 3", warehouse5.spoolCountByMaterial().getOrDefault("PLA", -1) == 3);
         check("Тест на количество ключей spoolCountByMaterial --> 3", warehouse4.spoolCountByMaterial().size() == 3);
-
+        Warehouse warehouse6 = new Warehouse();
+        check("порог 200 → contains PETG", warehouse6.materialsBelow(200).containsKey("PETG"));
+        check("порог 200 → contains TPU", warehouse6.materialsBelow(200).containsKey("TPU"));
+        check("порог 200 -> PETG и TPU, 2 ключа", warehouse6.materialsBelow(200).size() == 2);
+        check("порог 61 -> TPU, 1 ключ", warehouse6.materialsBelow(61).size() == 1);
+        check("порог 60 -> TPU, не докупаем", warehouse6.materialsBelow(60).isEmpty());
+        check("порог 3000 → PLA, PETG и TPU, 3 ключа", warehouse6.materialsBelow(3000).size() == 3);
+        check("порог 3000 → contains PETG", warehouse6.materialsBelow(3000).containsKey("PETG"));
+        check("порог 3000 → contains TPU", warehouse6.materialsBelow(3000).containsKey("TPU"));
+        check("порог 3000 → contains PLA", warehouse6.materialsBelow(3000).containsKey("PLA"));
+        check("после вызова materialReport() по-прежнему 3 материала", warehouse6.materialReport().size() == 3);
     }
 
     private static boolean approxEquals(double a, double b, double v) {
