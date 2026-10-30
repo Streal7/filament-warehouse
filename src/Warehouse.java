@@ -106,6 +106,16 @@ public class Warehouse {
         return result;
     }
 
+    Map<String, Double> materialUsedReport() {
+        Map<String, Double> result = new TreeMap<>();
+        for (Spool spool : spools) {
+            String material = spool.getMaterial();
+            double current = result.getOrDefault(material, 0.0);
+            result.put(material, current + spool.getGramsUsed());
+        }
+        return result;
+    }
+
     Map<String, Double> materialsBelow(double minGrams) {
         Map<String, Double> report = materialReport();
         Iterator<Map.Entry<String, Double>> iterator = report.entrySet().iterator();

@@ -7,7 +7,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             printMenu();
-            int cmd = readIntInRange(scanner, "Выберите пункт", 0, 13);
+            int cmd = readIntInRange(scanner, "Выберите пункт", 0, 14);
             if (cmd == 1) {
                 printStock(warehouse);
             } else if (cmd == 2) {
@@ -34,6 +34,8 @@ public class Main {
                 handleMaterialReport(warehouse);
             } else if (cmd == 13) {
                 handleMaterialBelow(scanner, warehouse);
+            } else if (cmd == 14) {
+                handleMaterialUsedReport(warehouse);
             } else if (cmd == 0) {
                 System.out.println("Выход из программы");
                 break;
@@ -238,6 +240,24 @@ public class Main {
         }
     }
 
+    static void handleMaterialUsedReport(Warehouse warehouse) {
+        if (warehouse.size() == 0) {
+            System.out.println("Склад пуст");
+            return;
+        }
+        Map<String, Integer> spoolCount = warehouse.spoolCountByMaterial();
+        Map<String, Double> spoolGrams = warehouse.materialUsedReport();
+
+        for (Map.Entry<String, Double> entry : spoolGrams.entrySet()) {
+            String material = entry.getKey();
+            double grams = entry.getValue();
+            int count = spoolCount.getOrDefault(material, 0);
+            System.out.printf("%-10s — %3d шт. — %8.2f г%n", material, count, grams);
+        }
+
+
+    }
+
     static void handleMaterialBelow(Scanner scanner, Warehouse warehouse) {
         if (warehouse.size() == 0) {
             System.out.println("Склад пуст");
@@ -279,8 +299,8 @@ public class Main {
         System.out.println("11. Заканчивающиеся катушки");
         System.out.println("12. Отчет по запасу материалов");
         System.out.println("13. Потребность пополнения материалов");
+        System.out.println("14. Отчет об использованном пластике");
         System.out.println("0. Выход");
-
     }
 
 
