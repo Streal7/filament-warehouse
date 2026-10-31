@@ -204,6 +204,16 @@ public class SpoolTest {
         check("warehouse8.materialUsedReport(PLA) --> 800", approxEquals(800.00, warehouse8.materialUsedReport().getOrDefault("PLA",-1.00), 0.001));
         check("warehouse8.totalUsed(PLA) --> 800", approxEquals(800.00, warehouse8.totalUsed(), 0.001));
         check("Списаний нет отчет пуст",new Warehouse().materialUsedReport().isEmpty());
+
+
+        Warehouse warehouse9 = new Warehouse();
+        check("mostUsedMaterial списаний нет --> null", warehouse9.mostUsedMaterial() == null);
+        warehouse9.spendFilament(2,100);
+        warehouse9.spendFilament(1,50);
+        warehouse9.spendFilament(4,55);
+        check("mostUsedMaterial --> PETG", "PETG".equals(warehouse9.mostUsedMaterial()));
+        warehouse9.spendFilament(1,50);
+        check("mostUsedMaterial() первый по алфавиту из двух одинаковых --> PETG", "PETG".equals(warehouse9.mostUsedMaterial()));
     }
 
     private static boolean approxEquals(double a, double b, double v) {

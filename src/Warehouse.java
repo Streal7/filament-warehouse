@@ -155,6 +155,20 @@ public class Warehouse {
         List<WriteOff> spendRecordsCopy = new ArrayList<>(spendRecords);
         return spendRecordsCopy;
     }
+
+    String mostUsedMaterial() {
+        Map<String, Double> used = materialUsedReport();
+        String best = null;
+        double max = 0;
+        for (Map.Entry<String, Double> entry : used.entrySet()) {
+            if (entry.getValue() > max) {
+                best = entry.getKey();
+                max = entry.getValue();
+            }
+        }
+        return best;
+    }
+
 }
 
 
