@@ -15,8 +15,8 @@ public class SpoolTest {
         check("gramsByMaterial(\"ABS\") ожидаем 0", approxEquals(warehouse.gramsByMaterial("ABS"), 0, 0.001));
         check("totalUsed до списаний ожидаем 0", approxEquals(warehouse.totalUsed(), 0, 0.001));
         check("totalValue 4566,9", approxEquals(warehouse.totalValue(), 4566.9, 0.001));
-        check("spend(100) → true", warehouse.getSpool(1).spend(100));
-        check("getSpool(1).spend(100) → totalUsed()", approxEquals(warehouse.totalUsed(), 100, 0.001));
+        check("spendFilament(100) → true", warehouse.spendFilament(1,100));
+        check("spendFilament(100) → totalUsed()", approxEquals(warehouse.totalUsed(), 100, 0.001));
         check("getSpool(1) и getSpool(6) — разные объекты", warehouse.getSpool(1) != warehouse.getSpool(6));
         check("списание с 1-й не затронуло 6-ю → остаток 850", approxEquals(warehouse.getSpool(6).getGramsLeft(), 850, 0.001));
         check("totalValue 4416,9", approxEquals(warehouse.totalValue(), 4416.9, 0.001));
@@ -168,17 +168,14 @@ public class SpoolTest {
         check("порог 3000 → contains TPU", warehouse6.materialsBelow(3000).containsKey("TPU"));
         check("порог 3000 → contains PLA", warehouse6.materialsBelow(3000).containsKey("PLA"));
         check("после вызова materialReport() по-прежнему 3 материала", warehouse6.materialReport().size() == 3);
-        check("на новом складе расход по всем материалам 0, ключей 3", warehouse6.materialUsedReport().size() == 3);
-        check("на новом складе расход по PLA 0", approxEquals(0.00, warehouse6.materialUsedReport().getOrDefault("PLA",-1.0), 0.001));
-        check("на новом складе расход по TPU 0", approxEquals(0.00, warehouse6.materialUsedReport().getOrDefault("TPU",-1.0), 0.001));
-        check("на новом складе расход по PETG 0", approxEquals(0.00, warehouse6.materialUsedReport().getOrDefault("PETG",-1.00), 0.001));
-        warehouse6.getSpool(1).spend(800);
+        warehouse6.spendFilament(1,800);
         check("на  складе расход по PLA 800", approxEquals(800.00, warehouse6.materialUsedReport().getOrDefault("PLA",-1.00), 0.001));
-        warehouse6.getSpool(4).spend(50);
+        warehouse6.spendFilament(4,50);
         check("на  складе расход по TPU 50", approxEquals(50.00, warehouse6.materialUsedReport().getOrDefault("TPU",-1.00), 0.001));
-        check("неудачное списание", !warehouse6.getSpool(4).spend(50));
+        check("неудачное списание", !warehouse6.spendFilament(4,50));
         check("на новом складе расход по TPU 50 после неудачного списания", approxEquals(50.00, warehouse6.materialUsedReport().getOrDefault("TPU",-1.00), 0.001));
         check("Пустой склад --> пустая Map materialUsedReport",warehouse2.materialUsedReport().isEmpty());
+
         WriteOff writeOff = new WriteOff("PLA", "Белый", 800, 1500);
 
         WriteOff writeOff2 = new WriteOff("PETG", "Черный", 120.5, 1800);
@@ -201,7 +198,13 @@ public class SpoolTest {
         check("списание было именно по катушке 1", approxEquals(warehouse7.getSpool(1).getGramsLeft(),50.00,0.001));
         records.clear();
         check("clear() не меняет журнал", warehouse7.getSpendRecords().size() == 1);
-  }
+        Warehouse warehouse8 = new Warehouse();
+        check("warehouse8.spendFilament(1,800) --> true", warehouse8.spendFilament(1,800));
+        check("Удаление катушки --> true",warehouse8.removeSpool(1));
+        check("warehouse8.materialUsedReport(PLA) --> 800", approxEquals(800.00, warehouse8.materialUsedReport().getOrDefault("PLA",-1.00), 0.001));
+        check("warehouse8.totalUsed(PLA) --> 800", approxEquals(800.00, warehouse8.totalUsed(), 0.001));
+        check("Списаний нет отчет пуст",new Warehouse().materialUsedReport().isEmpty());
+    }
 
     private static boolean approxEquals(double a, double b, double v) {
         return Math.abs(a - b) <= v;

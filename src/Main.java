@@ -114,7 +114,7 @@ public class Main {
         int number = Main.readIntInRange(scanner, "Введите номер катушки", 1, warehouse.size());
         double weight = Main.readPositiveDouble(scanner, "Вес модели, г");
         Spool spool = warehouse.getSpool(number);
-        boolean ok = spool.spend(weight);
+        boolean ok = warehouse.spendFilament(number, weight);
 
         if (ok) {
             System.out.printf("Списано. Осталось %.2f г, стоимость печати %.2f ₽%n",

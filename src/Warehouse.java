@@ -17,8 +17,8 @@ public class Warehouse {
 
     double totalUsed() {
         double sum = 0;
-        for (Spool spool : spools) {
-            sum += spool.getGramsUsed();
+        for (WriteOff record : spendRecords) {
+            sum += record.getGrams();
         }
         return sum;
     }
@@ -109,10 +109,10 @@ public class Warehouse {
 
     Map<String, Double> materialUsedReport() {
         Map<String, Double> result = new TreeMap<>();
-        for (Spool spool : spools) {
-            String material = spool.getMaterial();
+        for (WriteOff record : spendRecords) {
+            String material = record.getMaterial();
             double current = result.getOrDefault(material, 0.0);
-            result.put(material, current + spool.getGramsUsed());
+            result.put(material, current + record.getGrams());
         }
         return result;
     }
