@@ -65,6 +65,8 @@ public class Spool {
         return gramsUsed;
     }
 
+    public double getPricePerKg() { return pricePerKg;}
+
     @Override
     public String toString() {
         return String.format("%s %s, %.2f г", getMaterial(), getColor(), getGramsLeft());

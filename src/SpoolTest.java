@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.Map;
 
 public class SpoolTest {
@@ -178,10 +179,29 @@ public class SpoolTest {
         check("неудачное списание", !warehouse6.getSpool(4).spend(50));
         check("на новом складе расход по TPU 50 после неудачного списания", approxEquals(50.00, warehouse6.materialUsedReport().getOrDefault("TPU",-1.00), 0.001));
         check("Пустой склад --> пустая Map materialUsedReport",warehouse2.materialUsedReport().isEmpty());
+        WriteOff writeOff = new WriteOff("PLA", "Белый", 800, 1500);
 
-
-
-    }
+        WriteOff writeOff2 = new WriteOff("PETG", "Черный", 120.5, 1800);
+        check("writeOff.getMaterial() --> PLA", "PLA".equals(writeOff.getMaterial()));
+        check("writeOff.getColor() --> Белый", "Белый".equals(writeOff.getColor()));
+        check("writeOff.getGrams() --> 800.00", approxEquals(800.00, writeOff.getGrams(),0.001));
+        check("writeOff.getPricePerKg() --> 1500", approxEquals(1500.00,writeOff.getPricePerKg(),0.001));
+        check("writeOff.cost(800,1500) --> 1200", approxEquals(writeOff.cost(), 1200, 0.001));
+        check("writeOff2.cost() --> 216.9", approxEquals(216.9,writeOff2.cost(),0.001));
+        Warehouse warehouse7 = new Warehouse();
+        check("spendFilament(1, 800) --> true", warehouse7.spendFilament(1, 800));
+        List<WriteOff> records = warehouse7.getSpendRecords();
+        check("в журнале одна запись", records.size() == 1);
+        check("records.getMaterial = PLA", records.size() == 1 && "PLA".equals(records.get(0).getMaterial()));
+        check("records.getColor = Белый", records.size() == 1 && "Белый".equals(records.get(0).getColor()));
+        check("records.getGrams = 800", records.size() == 1 && approxEquals(800.00,records.get(0).getGrams(), 0.001));
+        check("records.getPricePerKG = 1500", records.size() == 1 && approxEquals(1500.00, records.get(0).getPricePerKg(), 0.001));
+        check("spendFilament(1, 800) --> false", !warehouse7.spendFilament(1, 800));
+        check("журнал не изменился", warehouse7.getSpendRecords().size() == 1);
+        check("списание было именно по катушке 1", approxEquals(warehouse7.getSpool(1).getGramsLeft(),50.00,0.001));
+        records.clear();
+        check("clear() не меняет журнал", warehouse7.getSpendRecords().size() == 1);
+  }
 
     private static boolean approxEquals(double a, double b, double v) {
         return Math.abs(a - b) <= v;

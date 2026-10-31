@@ -3,6 +3,7 @@ import java.util.*;
 public class Warehouse {
 
     private final List<Spool> spools = new ArrayList<>();
+    private final List<WriteOff> spendRecords = new ArrayList<>();
 
     Warehouse() {
         spools.add(new Spool("PLA", "Белый", 850, 1500));
@@ -138,6 +139,22 @@ public class Warehouse {
         return spoolCount;
     }
 
+    boolean spendFilament(int number, double grams){
+        Spool spool = getSpool(number);
+        if (spool == null){
+            return false;
+        }
+        if (!spool.spend(grams)){
+            return false;
+        }
+        spendRecords.add(new WriteOff(spool.getMaterial(),spool.getColor(), grams, spool.getPricePerKg()));
+        return true;
+    }
+
+    public List<WriteOff> getSpendRecords() {
+        List<WriteOff> spendRecordsCopy = new ArrayList<>(spendRecords);
+        return spendRecordsCopy;
+    }
 }
 
 
