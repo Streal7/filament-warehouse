@@ -38,7 +38,7 @@ public class Main {
             } else if (cmd == 14) {
                 handleMaterialUsedReport(warehouse);
             } else if (cmd == 15) {
-                handleWriteOffByMaterial(warehouse);
+                handleWriteOffsByMaterial(warehouse);
             } else if (cmd == 0) {
                 System.out.println("Выход из программы");
                 break;
@@ -67,6 +67,14 @@ public class Main {
                 return false;
             }
         }
+    }
+
+    private static boolean isEmptyAndReport(Warehouse warehouse) {
+        if (warehouse.size() == 0) {
+            System.out.println("Склад пуст");
+            return true;
+        }
+        return false;
     }
 
     static int readIntInRange(Scanner scanner, String prompt, int min, int max) {
@@ -110,8 +118,7 @@ public class Main {
     }
 
     static void handleSpend(Scanner scanner, Warehouse warehouse) {
-        if (warehouse.size() == 0) {
-            System.out.println("Склад пуст");
+        if (isEmptyAndReport(warehouse)) {
             return;
         }
         int number = Main.readIntInRange(scanner, "Введите номер катушки", 1, warehouse.size());
@@ -129,8 +136,7 @@ public class Main {
     }
 
     static void handleCostOf(Scanner scanner, Warehouse warehouse) {
-        if (warehouse.size() == 0) {
-            System.out.println("Склад пуст");
+        if (isEmptyAndReport(warehouse)) {
             return;
         }
         int number = Main.readIntInRange(scanner, "Номер катушки", 1, warehouse.size());
@@ -140,8 +146,7 @@ public class Main {
     }
 
     static void handleRefill(Scanner scanner, Warehouse warehouse) {
-        if (warehouse.size() == 0) {
-            System.out.println("Склад пуст");
+        if (isEmptyAndReport(warehouse)) {
             return;
         }
         int number = Main.readIntInRange(scanner, "Номер катушки", 1, warehouse.size());
@@ -156,8 +161,7 @@ public class Main {
     }
 
     static void handleGramsByMaterial(Scanner scanner, Warehouse warehouse) {
-        if (warehouse.size() == 0) {
-            System.out.println("Склад пуст");
+        if (isEmptyAndReport(warehouse)) {
             return;
         }
         System.out.println("Введите наименование материала для поиска остатков");
@@ -179,8 +183,7 @@ public class Main {
     }
 
     static void handleRemoveSpool(Scanner scanner, Warehouse warehouse) {
-        if (warehouse.size() == 0) {
-            System.out.println("Склад пуст");
+        if (isEmptyAndReport(warehouse)) {
             return;
         }
         int removeNumber = readIntInRange(scanner, "Введите номер катушки для удаления", 1, warehouse.size());
@@ -194,8 +197,7 @@ public class Main {
     }
 
     static void handleRemoveEmpty(Scanner scanner, Warehouse warehouse) {
-        if (warehouse.size() == 0) {
-            System.out.println("Склад пуст");
+        if (isEmptyAndReport(warehouse)) {
             return;
         }
         if (warehouse.countEmpty() == 0) {
@@ -212,8 +214,7 @@ public class Main {
     }
 
     static void handleLowSpools(Warehouse warehouse) {
-        if (warehouse.size() == 0) {
-            System.out.println("Склад пуст");
+        if (isEmptyAndReport(warehouse)) {
             return;
         }
         Map<Integer, Spool> lowSpools = warehouse.lowSpools();
@@ -228,8 +229,7 @@ public class Main {
     }
 
     static void handleMaterialReport(Warehouse warehouse) {
-        if (warehouse.size() == 0) {
-            System.out.println("Склад пуст");
+        if (isEmptyAndReport(warehouse)) {
             return;
         }
         Map<String, Integer> spoolCount = warehouse.spoolCountByMaterial();
@@ -244,8 +244,7 @@ public class Main {
     }
 
     static void handleMaterialUsedReport(Warehouse warehouse) {
-        if (warehouse.size() == 0) {
-            System.out.println("Склад пуст");
+        if (isEmptyAndReport(warehouse)) {
             return;
         }
         Map<String, Integer> spoolCount = warehouse.spoolCountByMaterial();
@@ -262,8 +261,7 @@ public class Main {
     }
 
     static void handleMaterialBelow(Scanner scanner, Warehouse warehouse) {
-        if (warehouse.size() == 0) {
-            System.out.println("Склад пуст");
+        if (isEmptyAndReport(warehouse)) {
             return;
         }
 
@@ -287,7 +285,7 @@ public class Main {
         System.out.println("*".repeat(80));
     }
 
-    static void handleWriteOffByMaterial(Warehouse warehouse) {
+    static void handleWriteOffsByMaterial(Warehouse warehouse) {
         Map<String, List<WriteOff>> byMaterial = warehouse.writeOffsByMaterial();
         if (byMaterial.isEmpty()) {
             System.out.println("Списаний еще не было");
