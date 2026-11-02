@@ -10,7 +10,7 @@ public class Main {
             printMenu();
             int cmd = readIntInRange(scanner, "Выберите пункт", 0, 15);
             if (cmd == 1) {
-                printStock(warehouse);
+                handleShowStock(warehouse);
             } else if (cmd == 2) {
                 handleSpend(scanner, warehouse);
             } else if (cmd == 3) {
@@ -228,6 +228,13 @@ public class Main {
         }
     }
 
+    static void handleShowStock(Warehouse warehouse) {
+        if (isEmptyAndReport(warehouse)) {
+            return;
+        }
+        printStock(warehouse);
+    }
+
     static void handleMaterialReport(Warehouse warehouse) {
         if (isEmptyAndReport(warehouse)) {
             return;
@@ -244,20 +251,18 @@ public class Main {
     }
 
     static void handleMaterialUsedReport(Warehouse warehouse) {
-        if (isEmptyAndReport(warehouse)) {
+        Map<String, Double> spoolGrams = warehouse.materialUsedReport();
+        if (spoolGrams.isEmpty()) {
+            System.out.println("Списаний еще не было");
             return;
         }
         Map<String, Integer> spoolCount = warehouse.spoolCountByMaterial();
-        Map<String, Double> spoolGrams = warehouse.materialUsedReport();
-
         for (Map.Entry<String, Double> entry : spoolGrams.entrySet()) {
             String material = entry.getKey();
             double grams = entry.getValue();
             int count = spoolCount.getOrDefault(material, 0);
             System.out.printf("%-10s — %3d шт. — %8.2f г%n", material, count, grams);
         }
-
-
     }
 
     static void handleMaterialBelow(Scanner scanner, Warehouse warehouse) {
@@ -276,9 +281,7 @@ public class Main {
             double gramsToAdd = grams - entry.getValue();
             System.out.printf("Материал %-10s нужно пополнить на %8.2f г%n", material, gramsToAdd);
         }
-
     }
-
 
     static void printStockHeader() {
         System.out.printf("%4s | %-10s | %-11s |  %11s | %10s | %s%n", "№п/п", "Материал", "Цвет", "Вес (грамм)", "Цена", "Предупреждения");
