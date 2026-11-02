@@ -5,6 +5,7 @@ out/
 *.iml
 .idea/
 .kotlin
+warehouse.jar
 
 ### Eclipse ###
 .apt_generated
