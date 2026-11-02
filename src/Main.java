@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -7,7 +8,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             printMenu();
-            int cmd = readIntInRange(scanner, "Выберите пункт", 0, 14);
+            int cmd = readIntInRange(scanner, "Выберите пункт", 0, 15);
             if (cmd == 1) {
                 printStock(warehouse);
             } else if (cmd == 2) {
@@ -36,6 +37,8 @@ public class Main {
                 handleMaterialBelow(scanner, warehouse);
             } else if (cmd == 14) {
                 handleMaterialUsedReport(warehouse);
+            } else if (cmd == 15) {
+                handleWriteOffByMaterial(warehouse);
             } else if (cmd == 0) {
                 System.out.println("Выход из программы");
                 break;
@@ -284,6 +287,20 @@ public class Main {
         System.out.println("*".repeat(80));
     }
 
+    static void handleWriteOffByMaterial(Warehouse warehouse) {
+        Map<String, List<WriteOff>> byMaterial = warehouse.writeOffsByMaterial();
+        if (byMaterial.isEmpty()) {
+            System.out.println("Списаний еще не было");
+            return;
+        }
+        for (Map.Entry<String, List<WriteOff>> entry : byMaterial.entrySet()) {
+            System.out.printf("%s:%n", entry.getKey());
+            for (WriteOff record : entry.getValue()) {
+                System.out.printf("  %s — вес: %.2f г — %.2f ₽%n", record.getColor(), record.getGrams(), record.cost());
+            }
+        }
+    }
+
     static void printMenu() {
         System.out.println("====Меню склада====");
         System.out.println("1. Показать склад");
@@ -300,6 +317,7 @@ public class Main {
         System.out.println("12. Отчет по запасу материалов");
         System.out.println("13. Потребность пополнения материалов");
         System.out.println("14. Отчет об использованном пластике");
+        System.out.println("15. Журнал списаний по материалам");
         System.out.println("0. Выход");
     }
 

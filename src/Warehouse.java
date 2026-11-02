@@ -169,6 +169,20 @@ public class Warehouse {
         return best;
     }
 
+    Map<String, List<WriteOff>> writeOffsByMaterial(){
+        Map<String, List<WriteOff>> byMaterial = new TreeMap<>();
+
+        for (WriteOff record : spendRecords){
+            String material = record.getMaterial();
+            List<WriteOff> list = byMaterial.get(material);
+            if (list == null){
+                list = new ArrayList<>();
+                byMaterial.put(material, list);
+            }
+            list.add(record);
+        }
+        return byMaterial;
+    }
 }
 
 
