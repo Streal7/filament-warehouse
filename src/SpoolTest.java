@@ -223,15 +223,22 @@ public class SpoolTest {
         groups = warehouse10.writeOffsByMaterial();
         check("После списаний PLA PLA TPU --> 2 ключа", groups.size() == 2);
         check("После списаний PLA PLA TPU --> 2 записи PLA в порядке списания", groups.containsKey("PLA") && groups.get("PLA").size() == 2);
-        check("PLA: первая запись 100 г, вторая 200 г",groups.containsKey("PLA") && groups.get("PLA").size() == 2
-                        && approxEquals(100, groups.get("PLA").get(0).getGrams(), 0.001) && approxEquals(200, groups.get("PLA").get(1).getGrams(), 0.001));
+        check("PLA: первая запись 100 г, вторая 200 г", groups.containsKey("PLA") && groups.get("PLA").size() == 2
+                && approxEquals(100, groups.get("PLA").get(0).getGrams(), 0.001) && approxEquals(200, groups.get("PLA").get(1).getGrams(), 0.001));
         check("spendFilament(1, 1000) при остатке 750 --> false", !warehouse10.spendFilament(1, 1000));
         groups = warehouse10.writeOffsByMaterial();
         check("Неудачное списание не попадает в группировку", groups.containsKey("PLA") && groups.get("PLA").size() == 2);
         warehouse10.writeOffsByMaterial().get("PLA").clear();
         groups = warehouse10.writeOffsByMaterial();
         check("warehouse10.writeOffsByMaterial().get(\"PLA\").clear() не меняет список", groups.containsKey("PLA") && groups.get("PLA").size() == 2);
-        check("TPU: = одна запись 10 г",groups.containsKey("TPU") && groups.get("TPU").size() == 1 && approxEquals(10, groups.get("TPU").get(0).getGrams(), 0.001));
+        check("TPU: = одна запись 10 г", groups.containsKey("TPU") && groups.get("TPU").size() == 1 && approxEquals(10, groups.get("TPU").get(0).getGrams(), 0.001));
+        Warehouse warehouse11 = new Warehouse();
+        check("color \"синий\" --> \"Синий\"", "Синий".equals(new Spool("PLA", "синий", 100, 1500).getColor()));
+        check("color \"СИНИЙ\" --> \"Синий\"", "Синий".equals(new Spool("PLA", "СИНИЙ", 100, 1500).getColor()));
+        check("color \"  синий  \" --> \"Синий\"", "Синий".equals(new Spool("PLA", "  синий  ", 100, 1500).getColor()));
+        check("склад №5 \"синий\" --> \"Синий\""    , "Синий".equals(warehouse11.getSpool(5).getColor()));
+        check("color \"\" --> \"Без цвета\"", "Без цвета".equals(new Spool("PLA", "", 100, 1500).getColor()));
+        check("color \"   \" --> \"Без цвета\"", "Без цвета".equals(new Spool("PLA", "   ", 100, 1500).getColor()));
     }
 
     private static boolean approxEquals(double a, double b, double v) {

@@ -2,6 +2,7 @@ public class Spool {
     private static final double LOW_THRESHOLD = 100.00;
     private static final double GRAMS_PER_KG = 1000.00;
     private static final double PRECISION_THRESHOLD = 0.001;
+    private static final String NO_COLOR = "Без цвета";
     private final String material;
     private final String color;
     private double gramsLeft;
@@ -10,7 +11,12 @@ public class Spool {
 
     Spool(String material, String color, double gramsLeft, double pricePerKg) {
         this.material = material.toUpperCase();
-        this.color = color;
+        String trimmed = color.trim();
+        if (trimmed.isEmpty()) {
+            this.color = NO_COLOR;
+        } else {
+            this.color = trimmed.substring(0, 1).toUpperCase() + trimmed.substring(1).toLowerCase();
+        }
         this.gramsLeft = gramsLeft;
         this.pricePerKg = pricePerKg;
         gramsUsed = 0;
@@ -65,7 +71,9 @@ public class Spool {
         return gramsUsed;
     }
 
-    public double getPricePerKg() { return pricePerKg;}
+    public double getPricePerKg() {
+        return pricePerKg;
+    }
 
     @Override
     public String toString() {
