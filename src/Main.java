@@ -261,7 +261,8 @@ public class Main {
             String material = entry.getKey();
             double grams = entry.getValue();
             int count = spoolCount.getOrDefault(material, 0);
-            System.out.printf("%-10s — %3d шт. — %8.2f г%n", material, count, grams);
+            String countString = (count > 0) ? "(на складе " + count + " шт.)" : "(на складе нет катушек)";
+            System.out.printf("%-10s — %8.2f г %s%n", material, grams, countString);
         }
     }
 
@@ -321,7 +322,6 @@ public class Main {
         System.out.println("15. Журнал списаний по материалам");
         System.out.println("0. Выход");
     }
-
 
     static void printStock(Warehouse warehouse) {
         printStockHeader();
