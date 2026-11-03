@@ -1,5 +1,6 @@
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 public class SpoolTest {
     static void check(String name, boolean passed) {
@@ -288,7 +289,7 @@ public class SpoolTest {
         }
         check("Spool(pricePerKg = -1500) --> IllegalArgumentException", thrown);
 
-        check("Spool(pricePerKg = 0.01) --> создается", approxEquals(new Spool("PLA", "Белый", 100, 0.01).getPricePerKg(),0.01,0.001));
+        check("Spool(pricePerKg = 0.01) --> создается", approxEquals(new Spool("PLA", "Белый", 100, 0.01).getPricePerKg(), 0.01, 0.001));
 
         thrown = false;
         try {
@@ -315,6 +316,31 @@ public class SpoolTest {
         check("Spool(material = null) --> IllegalArgumentException", thrown);
         check("Spool(color = null) --> \"Без цвета\"", "Без цвета".equals(new Spool("PLA", null, 100, 1500).getColor()));
         check("Spool(material = \"    pla    \") --> PLA", "PLA".equals(new Spool("    pla    ", "Белый", 100, 1500).getMaterial()));
+        Scanner input = new Scanner("abc\n99\n5\n");
+        check("readIntInRange: abc, 99, затем 5 --> 5", Main.readIntInRange(input, "Тест", 0, 15) == 5);
+        Scanner input1 = new Scanner("12 abc\n1");
+        check("readIntInRange: 12 abc\\n1\\n--> 1", Main.readIntInRange(input1, "Тест", 0, 15) == 1);
+        Scanner input2 = new Scanner("   1  \n1\n");
+        check("readIntInRange: \"   1   \" --> 1", Main.readIntInRange(input2, "Тест", 0, 15) == 1);
+        Scanner input3 = new Scanner("a5\n1\n");
+        check("readIntInRange: a5\\n1\\n--> 1", Main.readIntInRange(input3, "Тест", 0, 15) == 1);
+        Scanner input4 = new Scanner("\n2\n");
+        check("readIntInRange: \\n2\\n--> 2", Main.readIntInRange(input4, "Тест", 0, 15) == 2);
+
+        Scanner input5 = new Scanner("0\n");
+        check("readIntInRange: \"0\\n\" --> 0", Main.readIntInRange(input5, "Тест", 0, 15) == 0);
+        Scanner input6 = new Scanner("15\n");
+        check("readIntInRange: 15\\n --> 15", Main.readIntInRange(input6, "Тест", 0, 15) == 15);
+        Scanner input7 = new Scanner("-1\n3\n");
+        check("readIntInRange: -1\\n3\\n--> 3", Main.readIntInRange(input7, "Тест", 0, 15) == 3);
+        check("readPositiveDouble:119,5\\n → 119.5", approxEquals(Main.readPositiveDouble(new Scanner("119,5\n"), "Тест"), 119.5, 0.001));
+        check("readPositiveDouble:119.5\\n → 119.5", approxEquals(Main.readPositiveDouble(new Scanner("119.5\n"), "Тест"), 119.5, 0.001));
+        check("readPositiveDouble:0\\n-5\\n10\\n → 10.0", approxEquals(Main.readPositiveDouble(new Scanner("0\n-05\n10\n"), "Тест"), 10.0, 0.001));
+        check("readPositiveDouble:abc\\n2,5\\n → 2.5", approxEquals(Main.readPositiveDouble(new Scanner("abc\n2,5\n"), "Тест"), 2.5, 0.001));
+        check("readPositiveDouble:\"   2,5   \" → 2.5", approxEquals(Main.readPositiveDouble(new Scanner("   2,5   \n"), "Тест"), 2.5, 0.001));
+        check("readPositiveDouble:abc\\n3\\n → 3.0", approxEquals(Main.readPositiveDouble(new Scanner("12 abc\n3\n"), "Тест"), 3.0, 0.001));
+        check("readPositiveDouble:Infinity\\n5\\n → 5.0", approxEquals(Main.readPositiveDouble(new Scanner("Infinity\n5\n"), "Тест"), 5.0, 0.001));
+
     }
 
 
