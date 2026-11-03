@@ -96,14 +96,13 @@ public class Main {
 
     static int readIntInRange(Scanner scanner, String prompt, int min, int max) {
         while (true) {
-            int number = -1;
             System.out.println(prompt);
-            if (scanner.hasNextInt()) {
-                number = scanner.nextInt();
-                scanner.nextLine();
-            } else {
-                scanner.next();
-                System.out.println("Нужно ввести число");
+            String line = scanner.nextLine().trim();
+            int number;
+            try {
+                number = Integer.parseInt(line);
+            } catch (NumberFormatException e) {
+                System.out.println("Нужно ввести целое число");
                 continue;
             }
             if (number >= min && number <= max) {
@@ -116,20 +115,20 @@ public class Main {
 
     static double readPositiveDouble(Scanner scanner, String prompt) {
         while (true) {
-            double number = -1;
             System.out.println(prompt);
-            if (scanner.hasNextDouble()) {
-                number = scanner.nextDouble();
-                scanner.nextLine();
-            } else {
-                scanner.next();
+            String line = scanner.nextLine().trim();
+            line = line.replace(',', '.');
+            double number;
+            try {
+                number = Double.parseDouble(line);
+            } catch (NumberFormatException e) {
                 System.out.println("Нужно ввести число");
                 continue;
             }
-            if (number > 0) {
+            if ((number > 0) && (Double.isFinite(number))) {
                 return number;
             } else {
-                System.out.println("Число должно быть больше 0");
+                System.out.println("Нужно ввести конечное число больше 0");
             }
         }
     }
