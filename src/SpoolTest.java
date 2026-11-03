@@ -340,6 +340,19 @@ public class SpoolTest {
         check("readPositiveDouble:\"   2,5   \" → 2.5", approxEquals(Main.readPositiveDouble(new Scanner("   2,5   \n"), "Тест"), 2.5, 0.001));
         check("readPositiveDouble:abc\\n3\\n → 3.0", approxEquals(Main.readPositiveDouble(new Scanner("12 abc\n3\n"), "Тест"), 3.0, 0.001));
         check("readPositiveDouble:Infinity\\n5\\n → 5.0", approxEquals(Main.readPositiveDouble(new Scanner("Infinity\n5\n"), "Тест"), 5.0, 0.001));
+        check("DEFECT.isLoss() --> true", RemovalReason.DEFECT.isLoss());
+        check("BROKEN.isLoss() --> true", RemovalReason.BROKEN.isLoss());
+        check("USED_UP.isLoss() --> false", !RemovalReason.USED_UP.isLoss());
+        RemovalRecord defect = new RemovalRecord("PLA", "Белый", 600, 1500, RemovalReason.DEFECT);
+        check("RemovalRecord.getMaterial --> PLA", "PLA".equals(defect.getMaterial()));
+        check("RemovalReason.DEFECT.getTitle() --> Брак","Брак".equals(RemovalReason.DEFECT.getTitle()));
+        check("RemovalRecord.getColor --> Белый", "Белый".equals(defect.getColor()));
+        check("RemovalRecord.getGrams --> 600.0", approxEquals(defect.getGrams(), 600, 0.001));
+        check("RemovalRecord.getPricePerKg --> 1500.0", approxEquals(defect.getPricePerKg(), 1500, 0.001));
+        check("RemovalRecord.getReason --> DEFECT", defect.getReason() == RemovalReason.DEFECT);
+        check("defect.lossCost() --> 900.0", approxEquals(defect.lossCost(), 900, 0.001));
+        RemovalRecord defect1 = new RemovalRecord("PLA", "Белый", 10, 1500, RemovalReason.USED_UP);
+        check("RemovalRecord(USED_UP, 10 г).lossCost() --> 0", approxEquals(defect1.lossCost(), 0, 0.001));
 
     }
 
