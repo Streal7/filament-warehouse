@@ -263,7 +263,58 @@ public class SpoolTest {
         check("spoolWord(2, Main.Case.ACCUSATIVE)  --> катушки", "катушки".equals(Main.spoolWord(2, Main.Case.ACCUSATIVE)));
         check("spoolWord(5, Main.Case.ACCUSATIVE) --> катушек", "катушек".equals(Main.spoolWord(5, Main.Case.ACCUSATIVE)));
         check("spoolWord(11, Main.Case.ACCUSATIVE) --> катушек", "катушек".equals(Main.spoolWord(11, Main.Case.ACCUSATIVE)));
+        boolean thrown = false;
+        try {
+            new Spool("PLA", "Белый", -100, 1500);
+        } catch (IllegalArgumentException e) {
+            thrown = true;
+        }
+        check("Spool(gramsLeft = -100) --> IllegalArgumentException", thrown);
+        check("Spool(gramsLeft = 0) -->  создается, остаток 0", approxEquals(new Spool("PLA", "Белый", 0, 1500).getGramsLeft(), 0.00, 0.001));
 
+        thrown = false;
+        try {
+            new Spool("PLA", "Белый", 100, 0);
+        } catch (IllegalArgumentException e) {
+            thrown = true;
+        }
+        check("Spool(pricePerKg = 0) --> IllegalArgumentException", thrown);
+
+        thrown = false;
+        try {
+            new Spool("PLA", "Белый", 100, -1500);
+        } catch (IllegalArgumentException e) {
+            thrown = true;
+        }
+        check("Spool(pricePerKg = -1500) --> IllegalArgumentException", thrown);
+
+        check("Spool(pricePerKg = 0.01) --> создается", approxEquals(new Spool("PLA", "Белый", 100, 0.01).getPricePerKg(),0.01,0.001));
+
+        thrown = false;
+        try {
+            new Spool("", "Белый", 100, 1500);
+        } catch (IllegalArgumentException e) {
+            thrown = true;
+        }
+        check("Spool(material = \"\") --> IllegalArgumentException", thrown);
+
+        thrown = false;
+        try {
+            new Spool("    ", "Белый", 100, 1500);
+        } catch (IllegalArgumentException e) {
+            thrown = true;
+        }
+        check("Spool(material = \"    \") --> IllegalArgumentException", thrown);
+
+        thrown = false;
+        try {
+            new Spool(null, "Белый", 100, 1500);
+        } catch (IllegalArgumentException e) {
+            thrown = true;
+        }
+        check("Spool(material = null) --> IllegalArgumentException", thrown);
+        check("Spool(color = null) --> \"Без цвета\"", "Без цвета".equals(new Spool("PLA", null, 100, 1500).getColor()));
+        check("Spool(material = \"    pla    \") --> PLA", "PLA".equals(new Spool("    pla    ", "Белый", 100, 1500).getMaterial()));
     }
 
 

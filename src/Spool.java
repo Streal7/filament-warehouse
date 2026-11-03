@@ -10,7 +10,19 @@ public class Spool {
     private double gramsUsed;
 
     Spool(String material, String color, double gramsLeft, double pricePerKg) {
-        this.material = material.toUpperCase();
+        if ((material == null) || (material.trim().isEmpty())){
+            throw new IllegalArgumentException("Материал не может быть пустым: " + material);
+        }
+        if (gramsLeft < 0) {
+            throw new IllegalArgumentException("Остаток не может быть отрицательным: " + gramsLeft);
+        }
+        if (pricePerKg <= 0) {
+            throw new IllegalArgumentException("Цена не может быть нулевой или отрицательной: " + pricePerKg);
+        }
+        this.material = material.trim().toUpperCase();
+        if (color == null){
+            color = "";
+        }
         String trimmed = color.trim();
         if (trimmed.isEmpty()) {
             this.color = NO_COLOR;
