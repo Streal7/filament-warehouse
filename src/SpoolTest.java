@@ -1,3 +1,4 @@
+import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -69,22 +70,22 @@ public class SpoolTest {
         check("проверка \"abs\" без учета регистра gramsByMaterial == 1500", approxEquals(warehouse.gramsByMaterial("ABS"), 1500, 0.001));
         //Тесты удаления катушки
         Warehouse warehouse1 = new Warehouse();
-        check("Удалить катушку №1 --> true", warehouse1.removeSpool(1));
+        check("Удалить катушку №1 --> true", warehouse1.removeSpool(1, RemovalReason.USED_UP));
         check("size() --> 5", warehouse1.size() == 5);
         check("getSpool(1).getMaterial() --> PETG", warehouse1.getSpool(1).getMaterial().equals("PETG"));
         check("gramsByMaterial(\"PLA\") --> 1950", approxEquals(warehouse1.gramsByMaterial("PLA"), 1950, 0.001));
-        check("Удалить катушку №0 --> false", !warehouse1.removeSpool(0));
-        check("Удалить катушку №6 --> false", !warehouse1.removeSpool(6));
-        check("Удалить катушку №1 из 5 --> true", warehouse1.removeSpool(1));
-        check("Удалить катушку №1 из 4 --> true", warehouse1.removeSpool(1));
-        check("Удалить катушку №1 из 3 --> true", warehouse1.removeSpool(1));
-        check("Удалить катушку №1 из 2 --> true", warehouse1.removeSpool(1));
-        check("Удалить катушку №1 из 1 --> true", warehouse1.removeSpool(1));
+        check("Удалить катушку №0 --> false", !warehouse1.removeSpool(0, RemovalReason.USED_UP));
+        check("Удалить катушку №6 --> false", !warehouse1.removeSpool(6, RemovalReason.USED_UP));
+        check("Удалить катушку №1 из 5 --> true", warehouse1.removeSpool(1, RemovalReason.USED_UP));
+        check("Удалить катушку №1 из 4 --> true", warehouse1.removeSpool(1, RemovalReason.USED_UP));
+        check("Удалить катушку №1 из 3 --> true", warehouse1.removeSpool(1, RemovalReason.USED_UP));
+        check("Удалить катушку №1 из 2 --> true", warehouse1.removeSpool(1, RemovalReason.USED_UP));
+        check("Удалить катушку №1 из 1 --> true", warehouse1.removeSpool(1, RemovalReason.USED_UP));
         check("size() --> 0", warehouse1.size() == 0);
         check("totalValue()", warehouse1.totalValue() == 0);
         check("totalUsed()", warehouse1.totalUsed() == 0);
         check("getSpool(1) -- > false", warehouse1.getSpool(1) == null);
-        check("removeSpool(1) -- > false", !warehouse1.removeSpool(1));
+        check("removeSpool(1) -- > false", !warehouse1.removeSpool(1, RemovalReason.USED_UP));
         //Тесты удаления пустых катушек
         Warehouse warehouse2 = new Warehouse();
         check("countEmpty() --> 0", warehouse2.countEmpty() == 0);
@@ -112,12 +113,12 @@ public class SpoolTest {
         }
         check("ни у одной катушки остаток не 0", !hasEmptySpool);
         check("removeEmpty() --> 0", warehouse2.removeEmpty() == 0);
-        warehouse2.removeSpool(1);
-        warehouse2.removeSpool(1);
-        warehouse2.removeSpool(1);
-        warehouse2.removeSpool(1);
-        warehouse2.removeSpool(1);
-        warehouse2.removeSpool(1);
+        warehouse2.removeSpool(1, RemovalReason.BROKEN);
+        warehouse2.removeSpool(1, RemovalReason.BROKEN);
+        warehouse2.removeSpool(1, RemovalReason.BROKEN);
+        warehouse2.removeSpool(1, RemovalReason.BROKEN);
+        warehouse2.removeSpool(1, RemovalReason.BROKEN);
+        warehouse2.removeSpool(1, RemovalReason.BROKEN);
         check("size() --> 0", warehouse2.size() == 0);
         check("removeEmpty() --> 0", warehouse2.removeEmpty() == 0);
         Warehouse warehouse3 = new Warehouse();
@@ -155,7 +156,7 @@ public class SpoolTest {
         check("spoolCountByMaterial() TPU -- > 1", warehouse5.spoolCountByMaterial().getOrDefault("TPU", -1) == 1);
         check("spoolCountByMaterial() PETG -- > 1", warehouse5.spoolCountByMaterial().getOrDefault("PETG", -1) == 1);
         check("Пустой склад --> пустая Map spoolCountByMaterial", warehouse2.spoolCountByMaterial().isEmpty());
-        warehouse5.removeSpool(1);
+        warehouse5.removeSpool(1, RemovalReason.USED_UP);
         check("spoolCountByMaterial() PLA после удаления 1 катушки -- > 3", warehouse5.spoolCountByMaterial().getOrDefault("PLA", -1) == 3);
         check("Тест на количество ключей spoolCountByMaterial --> 3", warehouse4.spoolCountByMaterial().size() == 3);
         Warehouse warehouse6 = new Warehouse();
@@ -201,7 +202,7 @@ public class SpoolTest {
         check("clear() не меняет журнал", warehouse7.getSpendRecords().size() == 1);
         Warehouse warehouse8 = new Warehouse();
         check("warehouse8.spendFilament(1,800) --> true", warehouse8.spendFilament(1, 800));
-        check("Удаление катушки --> true", warehouse8.removeSpool(1));
+        check("Удаление катушки --> true", warehouse8.removeSpool(1, RemovalReason.USED_UP));
         check("warehouse8.materialUsedReport(PLA) --> 800", approxEquals(800.00, warehouse8.materialUsedReport().getOrDefault("PLA", -1.00), 0.001));
         check("warehouse8.totalUsed(PLA) --> 800", approxEquals(800.00, warehouse8.totalUsed(), 0.001));
         check("Списаний нет отчет пуст", new Warehouse().materialUsedReport().isEmpty());
@@ -345,14 +346,38 @@ public class SpoolTest {
         check("USED_UP.isLoss() --> false", !RemovalReason.USED_UP.isLoss());
         RemovalRecord defect = new RemovalRecord("PLA", "Белый", 600, 1500, RemovalReason.DEFECT);
         check("RemovalRecord.getMaterial --> PLA", "PLA".equals(defect.getMaterial()));
-        check("RemovalReason.DEFECT.getTitle() --> Брак","Брак".equals(RemovalReason.DEFECT.getTitle()));
+        check("RemovalReason.DEFECT.getTitle() --> Брак", "Брак".equals(RemovalReason.DEFECT.getTitle()));
         check("RemovalRecord.getColor --> Белый", "Белый".equals(defect.getColor()));
         check("RemovalRecord.getGrams --> 600.0", approxEquals(defect.getGrams(), 600, 0.001));
         check("RemovalRecord.getPricePerKg --> 1500.0", approxEquals(defect.getPricePerKg(), 1500, 0.001));
         check("RemovalRecord.getReason --> DEFECT", defect.getReason() == RemovalReason.DEFECT);
         check("defect.lossCost() --> 900.0", approxEquals(defect.lossCost(), 900, 0.001));
-        RemovalRecord defect1 = new RemovalRecord("PLA", "Белый", 10, 1500, RemovalReason.USED_UP);
-        check("RemovalRecord(USED_UP, 10 г).lossCost() --> 0", approxEquals(defect1.lossCost(), 0, 0.001));
+        RemovalRecord usedUp = new RemovalRecord("PLA", "Белый", 10, 1500, RemovalReason.USED_UP);
+        check("RemovalRecord(USED_UP, 10 г).lossCost() --> 0", approxEquals(usedUp.lossCost(), 0, 0.001));
+        Warehouse warehouse12 = new Warehouse();
+        check("removeSpool(1, DEFECT) --> true", warehouse12.removeSpool(1, RemovalReason.DEFECT));
+        List<RemovalRecord> removals = warehouse12.getRemovalRecords();
+        check("журнал удалений: одна запись", removals.size() == 1);
+        check("запись: PLA, 850 г, DEFECT", removals.size() == 1
+                && "PLA".equals(removals.get(0).getMaterial())
+                && approxEquals(removals.get(0).getGrams(), 850, 0.001)
+                && removals.get(0).getReason() == RemovalReason.DEFECT);
+        check("lossGrams() --> 850", approxEquals(warehouse12.lossGrams(), 850, 0.001));
+        check("lossCost() --> 1275", approxEquals(warehouse12.lossCost(), 1275, 0.001));
+        check("removals.get(0).getMaterial() --> PLA", "PLA".equals(removals.get(0).getMaterial()));
+        check("removals.get(0).getColor() --> Белый", "Белый".equals(removals.get(0).getColor()));
+        check("removals.get(0).getGrams() --> 850", approxEquals(removals.get(0).getGrams(), 850, 0.001));
+        check("removals.get(0).getReason() --> DEFECT", removals.get(0).getReason() == RemovalReason.DEFECT);
+        check("warehouse12.removeSpool(99, RemovalReason.DEFECT) --> false", !warehouse12.removeSpool(99, RemovalReason.DEFECT));
+        removals = warehouse12.getRemovalRecords();
+        check("По прежнему одна запись", removals.size() == 1);thrown = false;
+        try {
+            warehouse12.removeSpool(1, null);
+        } catch (IllegalArgumentException e) {
+            thrown = true;
+        }
+        check("removeSpool(1, null) --> IllegalArgumentException", thrown);
+        check("после removeSpool(1, null) размер склада прежний --> 5", warehouse12.size() == 5);
 
     }
 

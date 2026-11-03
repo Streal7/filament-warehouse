@@ -205,7 +205,7 @@ public class Main {
         int removeNumber = readIntInRange(scanner, "Введите номер катушки для удаления", 1, warehouse.size());
         boolean isToDelete = readYesNo(scanner, (String.format("Вы уверены, что хотите удалить катушку %s?", warehouse.getSpool(removeNumber).toString())));
         if (isToDelete) {
-            warehouse.removeSpool(removeNumber);
+            warehouse.removeSpool(removeNumber, RemovalReason.USED_UP);
             printStock(warehouse);
         } else {
             System.out.println("Удаление отменено");

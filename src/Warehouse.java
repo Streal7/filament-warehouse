@@ -4,6 +4,7 @@ public class Warehouse {
 
     private final List<Spool> spools = new ArrayList<>();
     private final List<WriteOff> spendRecords = new ArrayList<>();
+    private final List<RemovalRecord> removalRecords = new ArrayList<>();
 
     Warehouse() {
         spools.add(new Spool("PLA", "Белый", 850, 1500));
@@ -54,7 +55,7 @@ public class Warehouse {
         return true;
     }
 
-    boolean removeSpool(int number) {
+    boolean removeSpool(int number, RemovalReason reason) {
         if (number < 1 || number > spools.size()) {
             return false;
         }
@@ -182,6 +183,20 @@ public class Warehouse {
             list.add(record);
         }
         return byMaterial;
+    }
+
+    public List<RemovalRecord> getRemovalRecords() {
+        return new ArrayList<>(removalRecords);
+    }
+
+    public double lossGrams(){
+        double loss = 0.0;
+        return loss;
+    }
+
+    public double lossCost(){
+        double cost = 0.0;
+        return cost;
     }
 }
 
