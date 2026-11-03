@@ -236,10 +236,36 @@ public class SpoolTest {
         check("color \"синий\" --> \"Синий\"", "Синий".equals(new Spool("PLA", "синий", 100, 1500).getColor()));
         check("color \"СИНИЙ\" --> \"Синий\"", "Синий".equals(new Spool("PLA", "СИНИЙ", 100, 1500).getColor()));
         check("color \"  синий  \" --> \"Синий\"", "Синий".equals(new Spool("PLA", "  синий  ", 100, 1500).getColor()));
-        check("склад №5 \"синий\" --> \"Синий\""    , "Синий".equals(warehouse11.getSpool(5).getColor()));
+        check("склад №5 \"синий\" --> \"Синий\"", "Синий".equals(warehouse11.getSpool(5).getColor()));
         check("color \"\" --> \"Без цвета\"", "Без цвета".equals(new Spool("PLA", "", 100, 1500).getColor()));
         check("color \"   \" --> \"Без цвета\"", "Без цвета".equals(new Spool("PLA", "   ", 100, 1500).getColor()));
+        check("spoolWord(0, Main.Case.NOMINATIVE) --> катушек", "катушек".equals(Main.spoolWord(0, Main.Case.NOMINATIVE)));
+        check("spoolWord(1, Main.Case.NOMINATIVE)  --> катушка", "катушка".equals(Main.spoolWord(1, Main.Case.NOMINATIVE)));
+        check("spoolWord(2, Main.Case.NOMINATIVE)  --> катушки", "катушки".equals(Main.spoolWord(2, Main.Case.NOMINATIVE)));
+        check("spoolWord(3, Main.Case.NOMINATIVE) --> катушки", "катушки".equals(Main.spoolWord(3, Main.Case.NOMINATIVE)));
+        check("spoolWord(4, Main.Case.NOMINATIVE) --> катушки", "катушки".equals(Main.spoolWord(4, Main.Case.NOMINATIVE)));
+        check("spoolWord(5, Main.Case.NOMINATIVE) --> катушек", "катушек".equals(Main.spoolWord(5, Main.Case.NOMINATIVE)));
+        check("spoolWord(11, Main.Case.NOMINATIVE) --> катушек", "катушек".equals(Main.spoolWord(11, Main.Case.NOMINATIVE)));
+        check("spoolWord(12, Main.Case.NOMINATIVE) --> катушек", "катушек".equals(Main.spoolWord(12, Main.Case.NOMINATIVE)));
+        check("spoolWord(13, Main.Case.NOMINATIVE) --> катушек", "катушек".equals(Main.spoolWord(13, Main.Case.NOMINATIVE)));
+        check("spoolWord(14, Main.Case.NOMINATIVE) --> катушек", "катушек".equals(Main.spoolWord(14, Main.Case.NOMINATIVE)));
+        check("spoolWord(21, Main.Case.NOMINATIVE)  --> катушка", "катушка".equals(Main.spoolWord(21, Main.Case.NOMINATIVE)));
+        check("spoolWord(22, Main.Case.NOMINATIVE) --> катушки", "катушки".equals(Main.spoolWord(22, Main.Case.NOMINATIVE)));
+        check("spoolWord(25, Main.Case.NOMINATIVE) --> катушек", "катушек".equals(Main.spoolWord(25, Main.Case.NOMINATIVE)));
+        check("spoolWord(100, Main.Case.NOMINATIVE) --> катушек", "катушек".equals(Main.spoolWord(100, Main.Case.NOMINATIVE)));
+        check("spoolWord(101, Main.Case.NOMINATIVE) --> катушка", "катушка".equals(Main.spoolWord(101, Main.Case.NOMINATIVE)));
+        check("spoolWord(111, Main.Case.NOMINATIVE) --> катушек", "катушек".equals(Main.spoolWord(111, Main.Case.NOMINATIVE)));
+        check("spoolWord(112, Main.Case.NOMINATIVE) --> катушек", "катушек".equals(Main.spoolWord(112, Main.Case.NOMINATIVE)));
+        check("spoolWord(114, Main.Case.NOMINATIVE) --> катушек", "катушек".equals(Main.spoolWord(114, Main.Case.NOMINATIVE)));
+        check("spoolWord(1, Main.Case.ACCUSATIVE) --> катушку", "катушку".equals(Main.spoolWord(1, Main.Case.ACCUSATIVE)));
+        check("spoolWord(21, Main.Case.ACCUSATIVE) --> катушку", "катушку".equals(Main.spoolWord(21, Main.Case.ACCUSATIVE)));
+        check("spoolWord(101, Main.Case.ACCUSATIVE) --> катушку", "катушку".equals(Main.spoolWord(101, Main.Case.ACCUSATIVE)));
+        check("spoolWord(2, Main.Case.ACCUSATIVE)  --> катушки", "катушки".equals(Main.spoolWord(2, Main.Case.ACCUSATIVE)));
+        check("spoolWord(5, Main.Case.ACCUSATIVE) --> катушек", "катушек".equals(Main.spoolWord(5, Main.Case.ACCUSATIVE)));
+        check("spoolWord(11, Main.Case.ACCUSATIVE) --> катушек", "катушек".equals(Main.spoolWord(11, Main.Case.ACCUSATIVE)));
+
     }
+
 
     private static boolean approxEquals(double a, double b, double v) {
         return Math.abs(a - b) <= v;

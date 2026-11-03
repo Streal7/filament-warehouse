@@ -6,6 +6,7 @@ public class Main {
     public static void main(String[] args) {
         Warehouse warehouse = new Warehouse();
         Scanner scanner = new Scanner(System.in);
+
         while (true) {
             printMenu();
             int cmd = readIntInRange(scanner, "Выберите пункт", 0, 15);
@@ -45,6 +46,22 @@ public class Main {
             }
 
         }
+    }
+
+    enum Case {NOMINATIVE, ACCUSATIVE}
+
+    static String spoolWord(int count, Case grammaticalCase) {
+
+        if ((count % 100 >= 11) && (count % 100 <= 14)) {
+            return "катушек";
+        }
+        if (count % 10 == 1) {
+            return (grammaticalCase == Case.NOMINATIVE) ? "катушка" : "катушку";
+        }
+        if ((count % 10 >= 2) && (count % 10 <= 4)) {
+            return "катушки";
+        }
+        return "катушек";
     }
 
     static String readNonEmptyLine(Scanner scanner, String prompt) {
@@ -200,15 +217,19 @@ public class Main {
         if (isEmptyAndReport(warehouse)) {
             return;
         }
-        if (warehouse.countEmpty() == 0) {
+        int countEmpty = warehouse.countEmpty();
+        if (countEmpty == 0) {
             System.out.println("На складе нет пустых катушек");
             return;
         }
-        boolean isToDelete = readYesNo(scanner, (String.format("Вы уверены, что хотите удалить %d катушек?", warehouse.countEmpty())));
+        boolean isToDelete = readYesNo(scanner, (String.format("Вы уверены, что хотите удалить %d %s?", countEmpty, spoolWord(countEmpty, Case.ACCUSATIVE))));
         if (!isToDelete) {
             System.out.println("Удаление отменено");
         } else {
-            System.out.printf("Удалено %d катушек%n", warehouse.removeEmpty());
+            int removed = warehouse.removeEmpty();
+            String word = spoolWord(removed, Case.NOMINATIVE);
+            String deleted = "катушка".equals(word) ? "Удалена" : "Удалено";
+            System.out.printf("%s %d %s%n", deleted, removed, word);
             printStock(warehouse);
         }
     }
@@ -261,7 +282,7 @@ public class Main {
             String material = entry.getKey();
             double grams = entry.getValue();
             int count = spoolCount.getOrDefault(material, 0);
-            String countString = (count > 0) ? "(на складе " + count + " шт.)" : "(на складе нет катушек)";
+            String countString = (count > 0) ? "(на складе " + count + " " + spoolWord(count, Case.NOMINATIVE) + ")" : "(на складе нет катушек)";
             System.out.printf("%-10s — %8.2f г %s%n", material, grams, countString);
         }
     }
