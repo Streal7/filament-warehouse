@@ -267,7 +267,7 @@ public class Main {
             String material = entry.getKey();
             double grams = entry.getValue();
             int count = spoolCount.getOrDefault(material, 0);
-            System.out.printf("%-10s — %3d шт. — %8.2f г%n", material, count, grams);
+            System.out.printf("%-10s — %3d %-7s — %8.2f г%n", material, count, spoolWord(count, Case.NOMINATIVE), grams);
         }
     }
 
