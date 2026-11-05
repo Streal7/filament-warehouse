@@ -4,6 +4,7 @@ public class Warehouse {
 
     private final List<Spool> spools = new ArrayList<>();
     private final List<WriteOff> spendRecords = new ArrayList<>();
+    private final List<RemovalRecord> removalRecords = new ArrayList<>();
 
     Warehouse() {
         spools.add(new Spool("PLA", "Белый", 850, 1500));
@@ -54,10 +55,15 @@ public class Warehouse {
         return true;
     }
 
-    boolean removeSpool(int number) {
+    boolean removeSpool(int number, RemovalReason reason) {
+        if (reason == null) {
+            throw new IllegalArgumentException("Причина удаления не может быть null");
+        }
         if (number < 1 || number > spools.size()) {
             return false;
         }
+        Spool spool = getSpool(number);
+        addRemovalRecord(spool, reason);
         spools.remove(number - 1);
         return true;
     }
@@ -68,6 +74,7 @@ public class Warehouse {
         while (iterator.hasNext()) {
             Spool spool = iterator.next();
             if (spool.isEmpty()) {
+                addRemovalRecord(spool, RemovalReason.USED_UP);
                 iterator.remove();
                 counterEmptySpools++;
             }
@@ -139,15 +146,15 @@ public class Warehouse {
         return spoolCount;
     }
 
-    boolean spendFilament(int number, double grams){
+    boolean spendFilament(int number, double grams) {
         Spool spool = getSpool(number);
-        if (spool == null){
+        if (spool == null) {
             return false;
         }
-        if (!spool.spend(grams)){
+        if (!spool.spend(grams)) {
             return false;
         }
-        spendRecords.add(new WriteOff(spool.getMaterial(),spool.getColor(), grams, spool.getPricePerKg()));
+        spendRecords.add(new WriteOff(spool.getMaterial(), spool.getColor(), grams, spool.getPricePerKg()));
         return true;
     }
 
@@ -169,19 +176,56 @@ public class Warehouse {
         return best;
     }
 
-    Map<String, List<WriteOff>> writeOffsByMaterial(){
+    Map<String, List<WriteOff>> writeOffsByMaterial() {
         Map<String, List<WriteOff>> byMaterial = new TreeMap<>();
 
-        for (WriteOff record : spendRecords){
+        for (WriteOff record : spendRecords) {
             String material = record.getMaterial();
             List<WriteOff> list = byMaterial.get(material);
-            if (list == null){
+            if (list == null) {
                 list = new ArrayList<>();
                 byMaterial.put(material, list);
             }
             list.add(record);
         }
         return byMaterial;
+    }
+
+    public List<RemovalRecord> getRemovalRecords() {
+        return new ArrayList<>(removalRecords);
+    }
+
+    public double lossGrams() {
+        double loss = 0.0;
+        for (RemovalRecord removalRecord : removalRecords) {
+            if (removalRecord.getReason().isLoss()) {
+                loss += removalRecord.getGrams();
+            }
+        }
+        return loss;
+    }
+
+    public double lossCost() {
+        double cost = 0.0;
+        for (RemovalRecord removalRecord : removalRecords) {
+            cost += removalRecord.lossCost();
+        }
+        return cost;
+    }
+
+    boolean hasLosses() {
+        for (RemovalRecord removalRecord : removalRecords) {
+            if (removalRecord.getReason().isLoss()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private void addRemovalRecord(Spool spool, RemovalReason reason) {
+        RemovalRecord removalRecord = new RemovalRecord(spool.getMaterial(), spool.getColor(), spool.getGramsLeft(), spool.getPricePerKg(), reason);
+        removalRecords.add(removalRecord);
     }
 }
 

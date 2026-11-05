@@ -1,6 +1,4 @@
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -9,7 +7,7 @@ public class Main {
 
         while (true) {
             printMenu();
-            int cmd = readIntInRange(scanner, "Выберите пункт", 0, 15);
+            int cmd = readIntInRange(scanner, "Выберите пункт", 0, 16);
             if (cmd == 1) {
                 handleShowStock(warehouse);
             } else if (cmd == 2) {
@@ -40,6 +38,8 @@ public class Main {
                 handleMaterialUsedReport(warehouse);
             } else if (cmd == 15) {
                 handleWriteOffsByMaterial(warehouse);
+            } else if (cmd == 16) {
+                handleLoss(warehouse);
             } else if (cmd == 0) {
                 System.out.println("Выход из программы");
                 break;
@@ -203,9 +203,16 @@ public class Main {
             return;
         }
         int removeNumber = readIntInRange(scanner, "Введите номер катушки для удаления", 1, warehouse.size());
-        boolean isToDelete = readYesNo(scanner, (String.format("Вы уверены, что хотите удалить катушку %s?", warehouse.getSpool(removeNumber).toString())));
+        System.out.println("Причина удаления");
+        RemovalReason[] reasons = RemovalReason.values();
+        for (int i = 0; i < reasons.length; i++) {
+            System.out.println((i + 1) + ". " + reasons[i].getTitle());
+        }
+        int number = readIntInRange(scanner, "Выберите причину", 1, reasons.length);
+        RemovalReason reason = reasons[number - 1];
+        boolean isToDelete = readYesNo(scanner, (String.format("Вы уверены, что хотите удалить катушку %s, причина %s?", warehouse.getSpool(removeNumber).toString(), reason.getTitle().toLowerCase())));
         if (isToDelete) {
-            warehouse.removeSpool(removeNumber);
+            warehouse.removeSpool(removeNumber, reason);
             printStock(warehouse);
         } else {
             System.out.println("Удаление отменено");
@@ -323,6 +330,20 @@ public class Main {
         }
     }
 
+    static void handleLoss(Warehouse warehouse) {
+
+        if (!warehouse.hasLosses()) {
+            System.out.println("Потерь не было");
+            return;
+        }
+        for (RemovalRecord removalRecord : warehouse.getRemovalRecords()) {
+            if (removalRecord.getReason().isLoss()) {
+                System.out.printf("%-5s %-10s %8.2f г %8.2f ₽ %s%n", removalRecord.getMaterial(), removalRecord.getColor(), removalRecord.getGrams(), removalRecord.lossCost(), removalRecord.getReason().getTitle());
+            }
+        }
+        System.out.printf("Всего потеряно %.2f г на сумму %.2f ₽%n", warehouse.lossGrams(), warehouse.lossCost());
+    }
+
     static void printMenu() {
         System.out.println("====Меню склада====");
         System.out.println("1. Показать склад");
@@ -340,6 +361,7 @@ public class Main {
         System.out.println("13. Потребность пополнения материалов");
         System.out.println("14. Отчет об использованном пластике");
         System.out.println("15. Журнал списаний по материалам");
+        System.out.println("16. Журнал по потерям");
         System.out.println("0. Выход");
     }
 
@@ -348,5 +370,8 @@ public class Main {
         for (int i = 1; i <= warehouse.size(); i++) {
             System.out.println(warehouse.getSpool(i).toRow(i));
         }
+
+
     }
+
 }
