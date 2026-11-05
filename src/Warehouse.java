@@ -213,6 +213,16 @@ public class Warehouse {
         return cost;
     }
 
+    boolean hasLosses() {
+        for (RemovalRecord removalRecord : removalRecords) {
+            if (removalRecord.getReason().isLoss()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     private void addRemovalRecord(Spool spool, RemovalReason reason) {
         RemovalRecord removalRecord = new RemovalRecord(spool.getMaterial(), spool.getColor(), spool.getGramsLeft(), spool.getPricePerKg(), reason);
         removalRecords.add(removalRecord);

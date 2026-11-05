@@ -393,6 +393,13 @@ public class SpoolTest {
         check("warehouse13: removeSpool(1, USED_UP) --> true", warehouse13.removeSpool(1, RemovalReason.USED_UP));
         check("warehouse13: USED_UP с остатком 850 г не потеря: lossGrams() --> 0", approxEquals(warehouse13.lossGrams(), 0, 0.001));
         check("warehouse13: lossCost() --> 0", approxEquals(warehouse13.lossCost(), 0, 0.001));
+        Warehouse warehouse14 = new Warehouse();
+        check("warehouse14.hasLosses() --> false", !warehouse14.hasLosses());
+        warehouse14.spendFilament(4,60);
+        warehouse14.removeEmpty();
+        check("warehouse14.hasLosses() после удаления пустой --> false", !warehouse14.hasLosses());
+        check("removeSpool(4, RemovalReason.BROKEN) --> true", warehouse14.removeSpool(4,RemovalReason.BROKEN));
+        check("warehouse14.hasLosses() после удаления по поломке --> true", warehouse14.hasLosses());
     }
 
 
