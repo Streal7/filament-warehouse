@@ -1,4 +1,3 @@
-import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -113,12 +112,12 @@ public class SpoolTest {
         }
         check("ни у одной катушки остаток не 0", !hasEmptySpool);
         check("removeEmpty() --> 0", warehouse2.removeEmpty() == 0);
-        warehouse2.removeSpool(1, RemovalReason.BROKEN);
-        warehouse2.removeSpool(1, RemovalReason.BROKEN);
-        warehouse2.removeSpool(1, RemovalReason.BROKEN);
-        warehouse2.removeSpool(1, RemovalReason.BROKEN);
-        warehouse2.removeSpool(1, RemovalReason.BROKEN);
-        warehouse2.removeSpool(1, RemovalReason.BROKEN);
+        warehouse2.removeSpool(1, RemovalReason.USED_UP);
+        warehouse2.removeSpool(1, RemovalReason.USED_UP);
+        warehouse2.removeSpool(1, RemovalReason.USED_UP);
+        warehouse2.removeSpool(1, RemovalReason.USED_UP);
+        warehouse2.removeSpool(1, RemovalReason.USED_UP);
+        warehouse2.removeSpool(1, RemovalReason.USED_UP);
         check("size() --> 0", warehouse2.size() == 0);
         check("removeEmpty() --> 0", warehouse2.removeEmpty() == 0);
         Warehouse warehouse3 = new Warehouse();
@@ -364,21 +363,36 @@ public class SpoolTest {
                 && removals.get(0).getReason() == RemovalReason.DEFECT);
         check("lossGrams() --> 850", approxEquals(warehouse12.lossGrams(), 850, 0.001));
         check("lossCost() --> 1275", approxEquals(warehouse12.lossCost(), 1275, 0.001));
-        check("removals.get(0).getMaterial() --> PLA", "PLA".equals(removals.get(0).getMaterial()));
-        check("removals.get(0).getColor() --> Белый", "Белый".equals(removals.get(0).getColor()));
-        check("removals.get(0).getGrams() --> 850", approxEquals(removals.get(0).getGrams(), 850, 0.001));
-        check("removals.get(0).getReason() --> DEFECT", removals.get(0).getReason() == RemovalReason.DEFECT);
-        check("warehouse12.removeSpool(99, RemovalReason.DEFECT) --> false", !warehouse12.removeSpool(99, RemovalReason.DEFECT));
-        removals = warehouse12.getRemovalRecords();
-        check("По прежнему одна запись", removals.size() == 1);thrown = false;
+        check("removeSpool(99, DEFECT) --> false", !warehouse12.removeSpool(99, RemovalReason.DEFECT));
+        check("после removeSpool(99) журнал: 1 запись", warehouse12.getRemovalRecords().size() == 1);
+
+        thrown = false;
         try {
             warehouse12.removeSpool(1, null);
         } catch (IllegalArgumentException e) {
             thrown = true;
         }
         check("removeSpool(1, null) --> IllegalArgumentException", thrown);
-        check("после removeSpool(1, null) размер склада прежний --> 5", warehouse12.size() == 5);
+        check("после removeSpool(1, null) размер склада --> 5", warehouse12.size() == 5);
 
+        check("брак не попал в расход: totalUsed() --> 0", approxEquals(warehouse12.totalUsed(), 0, 0.001));
+
+        warehouse12.getRemovalRecords().clear();
+        check("clear() копии не меняет журнал: 1 запись", warehouse12.getRemovalRecords().size() == 1);
+
+        Warehouse warehouse13 = new Warehouse();
+        warehouse13.spendFilament(4, 60);
+        check("warehouse13: removeEmpty() --> 1", warehouse13.removeEmpty() == 1);
+        List<RemovalRecord> removals13 = warehouse13.getRemovalRecords();
+        check("warehouse13: запись TPU, 0 г, USED_UP", removals13.size() == 1
+                && "TPU".equals(removals13.get(0).getMaterial())
+                && approxEquals(removals13.get(0).getGrams(), 0, 0.001)
+                && removals13.get(0).getReason() == RemovalReason.USED_UP);
+        check("warehouse13: lossGrams() --> 0", approxEquals(warehouse13.lossGrams(), 0, 0.001));
+        check("warehouse13: lossCost() --> 0", approxEquals(warehouse13.lossCost(), 0, 0.001));
+        check("warehouse13: removeSpool(1, USED_UP) --> true", warehouse13.removeSpool(1, RemovalReason.USED_UP));
+        check("warehouse13: USED_UP с остатком 850 г не потеря: lossGrams() --> 0", approxEquals(warehouse13.lossGrams(), 0, 0.001));
+        check("warehouse13: lossCost() --> 0", approxEquals(warehouse13.lossCost(), 0, 0.001));
     }
 
 

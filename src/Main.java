@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -348,5 +349,9 @@ public class Main {
         for (int i = 1; i <= warehouse.size(); i++) {
             System.out.println(warehouse.getSpool(i).toRow(i));
         }
+
+
+
     }
+
 }
