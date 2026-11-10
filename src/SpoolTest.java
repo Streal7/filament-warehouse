@@ -395,11 +395,17 @@ public class SpoolTest {
         check("warehouse13: lossCost() --> 0", approxEquals(warehouse13.lossCost(), 0, 0.001));
         Warehouse warehouse14 = new Warehouse();
         check("warehouse14.hasLosses() --> false", !warehouse14.hasLosses());
-        warehouse14.spendFilament(4,60);
+        warehouse14.spendFilament(4, 60);
         warehouse14.removeEmpty();
         check("warehouse14.hasLosses() после удаления пустой --> false", !warehouse14.hasLosses());
-        check("removeSpool(4, RemovalReason.BROKEN) --> true", warehouse14.removeSpool(4,RemovalReason.BROKEN));
+        check("removeSpool(4, RemovalReason.BROKEN) --> true", warehouse14.removeSpool(4, RemovalReason.BROKEN));
         check("warehouse14.hasLosses() после удаления по поломке --> true", warehouse14.hasLosses());
+        check("readRemovalReason(\"1\\n\") --> DEFECT", Main.readRemovalReason(new Scanner("1\n")) == (RemovalReason.DEFECT));
+        check("readRemovalReason(\"3\\n\") --> USED_UP", Main.readRemovalReason(new Scanner("3\n")) == (RemovalReason.USED_UP));
+        check("readRemovalReason(\"abc\\n2\\n\") --> BROKEN", Main.readRemovalReason(new Scanner("abc\n2\n")) == (RemovalReason.BROKEN));
+        check("readRemovalReason(\"0\\n4\\n1\\n\") --> DEFECT", Main.readRemovalReason(new Scanner("0\n4\n1\n")) == (RemovalReason.DEFECT));
+
+
     }
 
 
