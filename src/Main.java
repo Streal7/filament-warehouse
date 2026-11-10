@@ -4,7 +4,6 @@ public class Main {
     public static void main(String[] args) {
         Warehouse warehouse = new Warehouse();
         Scanner scanner = new Scanner(System.in);
-
         while (true) {
             printMenu();
             int cmd = readIntInRange(scanner, "Выберите пункт", 0, 16);
@@ -203,6 +202,17 @@ public class Main {
             return;
         }
         int removeNumber = readIntInRange(scanner, "Введите номер катушки для удаления", 1, warehouse.size());
+        RemovalReason reason = readRemovalReason(scanner);
+        boolean isToDelete = readYesNo(scanner, String.format("Вы уверены, что хотите удалить катушку %s, причина %s?", warehouse.getSpool(removeNumber), reason.getTitle().toLowerCase()));
+        if (isToDelete) {
+            warehouse.removeSpool(removeNumber, reason);
+            printStock(warehouse);
+        } else {
+            System.out.println("Удаление отменено");
+        }
+    }
+
+    static RemovalReason readRemovalReason(Scanner scanner) {
         System.out.println("Причина удаления");
         RemovalReason[] reasons = RemovalReason.values();
         for (int i = 0; i < reasons.length; i++) {
@@ -210,13 +220,7 @@ public class Main {
         }
         int number = readIntInRange(scanner, "Выберите причину", 1, reasons.length);
         RemovalReason reason = reasons[number - 1];
-        boolean isToDelete = readYesNo(scanner, (String.format("Вы уверены, что хотите удалить катушку %s, причина %s?", warehouse.getSpool(removeNumber).toString(), reason.getTitle().toLowerCase())));
-        if (isToDelete) {
-            warehouse.removeSpool(removeNumber, reason);
-            printStock(warehouse);
-        } else {
-            System.out.println("Удаление отменено");
-        }
+        return reason;
     }
 
     static void handleRemoveEmpty(Scanner scanner, Warehouse warehouse) {
@@ -370,8 +374,5 @@ public class Main {
         for (int i = 1; i <= warehouse.size(); i++) {
             System.out.println(warehouse.getSpool(i).toRow(i));
         }
-
-
     }
-
 }
